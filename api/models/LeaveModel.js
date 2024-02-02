@@ -4,7 +4,7 @@ import { leaveTypeEnum } from "../constant/enums";
 const leavesSchema = new mongoose.Schema(
   {
     employeeID: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "Employee",
     },
     leaveType: {
@@ -15,6 +15,7 @@ const leavesSchema = new mongoose.Schema(
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     totalDays: { type: Number, required: true },
+    status: { type: Boolean, default: false },
   },
   {
     timestamps: true,

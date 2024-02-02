@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const deductionSchema = new mongoose.Schema(
   {
     employeeID: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "Employee",
       required: true,
     },
@@ -12,8 +12,6 @@ const deductionSchema = new mongoose.Schema(
     Pagibig: { type: Number, required: true },
     PagibigLoan: { type: Number, required: true },
     PhilHealth: { type: Number, required: true },
-    Late: { type: Number, required: true },
-    UnderTime: { type: Number, required: true },
     IncomeTax: { type: Number, required: true },
   },
   {

@@ -1,21 +1,27 @@
 import mongoose from "mongoose";
-import { attendaceStatusEnum } from "../constant/enums";
-const ScheduleSchema = new mongoose.Schema(
+import { attendanceStatusEnum } from "../constant/enums.js";
+
+const AttendanceSchema = new mongoose.Schema(
   {
     employeeID: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "Employee",
     },
-    Date: { type: Date, required: true },
-    InTime: { type: String, required: true },
-    OutTime: { type: String, required: true },
-    Status: { type: String, required: true, enum: attendaceStatusEnum },
+    date: { type: String, required: true },
+    inTime: { type: String },
+    outTime: { type: String },
+    breakIn: { type: String },
+    breakOut: { type: String },
+    overTimeIn: { type: String },
+    overTimeOut: { type: String },
+    overtimeHour: { type: Number },
+    status: { type: String, required: true, enum: attendanceStatusEnum },
   },
   {
     timestamps: true,
   }
 );
 
-const Schedule = mongoose.model("Schedule", ScheduleSchema);
+const Attendance = mongoose.model("Attendance", AttendanceSchema);
 
-export default Schedule;
+export default Attendance;
