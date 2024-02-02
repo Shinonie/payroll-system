@@ -3,12 +3,12 @@ import mongoose from "mongoose";
 const ScheduleSchema = new mongoose.Schema(
   {
     employeeID: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "Employee",
     },
-    Date: { type: Date, required: true },
-    StartTime: { type: Timestamp, required: true },
-    EndTime: { type: Timestamp, required: true },
+    date: { type: String, required: true },
+    inTime: { type: String, required: true },
+    outTime: { type: String, required: true },
   },
   {
     timestamps: true,
