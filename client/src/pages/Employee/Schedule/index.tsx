@@ -15,11 +15,11 @@ import {
     SelectValue
 } from '@/components/ui/select';
 
-const Attendance = () => {
+const Schedule = () => {
     return (
         <div className="w-full p-10">
             <div className="mb-10">
-                <h1 className="text-xl">Attendance ID: #032621</h1>
+                <h1 className="text-xl">Schedule ID: #032621</h1>
                 <h1 className="text-2xl font-semibold flex flex-wrap gap-5">
                     <span>PERIOD: </span>
                     <Select>
@@ -42,7 +42,7 @@ const Attendance = () => {
             </div>
             <div>
                 <Table>
-                    <TableCaption className="text-primary">List of attendance</TableCaption>
+                    <TableCaption className="text-primary">List of Schedule</TableCaption>
                     <TableHeader className="bg-primary-foreground">
                         <TableRow>
                             <TableHead className="w-[150px]">Date</TableHead>
@@ -50,9 +50,6 @@ const Attendance = () => {
                             <TableHead className="w-[150px]">Break In</TableHead>
                             <TableHead className="w-[150px]">Break Out</TableHead>
                             <TableHead className="w-[150px]">Time Out</TableHead>
-                            <TableHead className="w-[150px]">Overtime In</TableHead>
-                            <TableHead className="w-[150px]">Overtime Out</TableHead>
-                            <TableHead className="w-[150px]">Remarks</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody className="bg-accent-foreground ">
@@ -62,9 +59,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 2, 2024</TableCell>
@@ -72,9 +66,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 3, 2024</TableCell>
@@ -82,9 +73,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 4, 2024</TableCell>
@@ -92,9 +80,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 5, 2024</TableCell>
@@ -102,9 +87,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 6, 2024</TableCell>
@@ -112,9 +94,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 7, 2024</TableCell>
@@ -122,9 +101,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 8, 2024</TableCell>
@@ -132,9 +108,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 9, 2024</TableCell>
@@ -142,9 +115,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 10, 2024</TableCell>
@@ -152,9 +122,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 1, 2024</TableCell>
@@ -162,9 +129,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 12, 2024</TableCell>
@@ -172,9 +136,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 13, 2024</TableCell>
@@ -182,9 +143,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 14, 2024</TableCell>
@@ -192,9 +150,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-medium">February 15, 2024</TableCell>
@@ -202,9 +157,6 @@ const Attendance = () => {
                             <TableCell>12:00 PM</TableCell>
                             <TableCell>01:00 PM</TableCell>
                             <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
@@ -213,4 +165,4 @@ const Attendance = () => {
     );
 };
 
-export default Attendance;
+export default Schedule;
