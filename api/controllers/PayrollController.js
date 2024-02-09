@@ -65,33 +65,33 @@ const createPayroll = async (req, res) => {
 
     const totalWorkHours = totalOvertimeHours + totalRegularHour;
 
+    let SSS = 0;
+    let Pagibig = 0;
+    let PhilHealth = 0;
+    let incomeTax = 0;
     const montlySalary = hourlyRate * 8 * 26;
 
-    const SSS = await SSSEEContribution(montlySalary);
-    const Pagibig = await PagIbigContribution(montlySalary);
-    const PhilHealth = await PhilHealthContribution(montlySalary);
-    const incomeTax = IncomeTaxContribution(montlySalary);
-
+    if (totalWorkHours >= 120) {
+      SSS = await SSSEEContribution(montlySalary);
+      Pagibig = await PagIbigContribution(montlySalary);
+      PhilHealth = await PhilHealthContribution(montlySalary);
+      incomeTax = IncomeTaxContribution(montlySalary);
+    }
     const totalGrossPay = totalWorkHours * hourlyRate + overtimePay;
 
-    const totalNetPay =
-      totalGrossPay -
-      (Number(SSS) +
-        Number(SSSLoan) +
-        Number(Pagibig) +
-        Number(PagibigLoan) +
-        Number(incomeTax.incomeTax) +
-        Number(PhilHealth));
-
-    // console.log(Number(incomeTax.incomeTax));
-    // console.log(
-    //   Number(SSS) +
-    //     Number(SSSLoan) +
-    //     Number(Pagibig) +
-    //     Number(PagibigLoan) +
-    //     Number(incomeTax.incomeTax) +
-    //     Number(PhilHealth)
-    // );
+    let totalNetPay;
+    if (totalWorkHours >= 120) {
+      totalNetPay =
+        totalGrossPay -
+        (Number(SSS) +
+          Number(SSSLoan) +
+          Number(Pagibig) +
+          Number(PagibigLoan) +
+          Number(incomeTax) +
+          Number(PhilHealth));
+    } else {
+      totalNetPay = totalGrossPay; // No deductions if totalWorkHours < 120
+    }
 
     const deduction = new Deduction({
       employeeID,
@@ -103,7 +103,8 @@ const createPayroll = async (req, res) => {
       IncomeTax: incomeTax.incomeTax,
     });
 
-    const totalDeductions = await deduction.save();
+    const totalDeductions =
+      totalWorkHours >= 120 ? await deduction.save() : null;
 
     const newPayroll = new Payroll({
       employeeID,
@@ -112,11 +113,11 @@ const createPayroll = async (req, res) => {
       hourlyRate,
       overtimeHours: totalOvertimeHours,
       totalHours: totalWorkHours,
-      totalDeductions: totalDeductions._id,
+      totalDeductions: totalWorkHours >= 120 ? totalDeductions._id : null,
       incentives,
       allowance,
-      totalGrossPay,
-      totalNetPay,
+      totalGrossPay: totalGrossPay.toFixed(2),
+      totalNetPay: totalNetPay.toFixed(2),
     });
 
     const savePayroll = await newPayroll.save();

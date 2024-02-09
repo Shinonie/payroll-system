@@ -2,11 +2,11 @@ import multer from "multer";
 import csvtojson from "csvtojson";
 import Attendance from "../models/AttendanceModel.js";
 import { AttendanceStatusSetter } from "../utils/AttendanceStatusSetter.js";
+import { AttendanceTableSetter } from "../utils/AttendanceTableSetter.js";
 
 const upload = multer({ dest: "../uploads" });
 
 const uploadAttendanceCSV = async (req, res) => {
-  console.log(req.file);
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -16,9 +16,9 @@ const uploadAttendanceCSV = async (req, res) => {
 
     const jsonArray = await csvtojson().fromFile(csvFilePath);
 
-    console.log(jsonArray);
-    const formattedData = await AttendanceStatusSetter(jsonArray);
+    const formattedTable = await AttendanceTableSetter(jsonArray);
 
+    const formattedData = await AttendanceStatusSetter(formattedTable);
     await Attendance.insertMany(formattedData);
 
     res.status(200).json({ message: "File uploaded successfully" });

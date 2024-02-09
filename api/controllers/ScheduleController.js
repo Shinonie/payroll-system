@@ -7,8 +7,10 @@ const createSchedule = async (req, res) => {
     const schedules = scheduleArray.map((schedule) => ({
       employeeID: schedule.employeeID,
       date: schedule.date,
-      inTime: schedule.inTime,
-      outTime: schedule.outTime,
+      timeIn: schedule.timeIn,
+      breakIn: schedule.breakIn,
+      breakOut: schedule.breakOut,
+      timeOut: schedule.timeOut,
     }));
 
     for (const schedule of schedules) {

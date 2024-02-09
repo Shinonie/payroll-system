@@ -7,8 +7,10 @@ const ScheduleSchema = new mongoose.Schema(
       ref: "Employee",
     },
     date: { type: String, required: true },
-    inTime: { type: String, required: true },
-    outTime: { type: String, required: true },
+    timeIn: { type: String, required: true },
+    breakIn: { type: String, required: true },
+    breakOut: { type: String, required: true },
+    timeOut: { type: String, required: true },
   },
   {
     timestamps: true,

@@ -12,50 +12,66 @@ export const AttendanceStatusSetter = async (attendances) => {
           throw new Error("Schedule not found");
         }
 
-        const inTime = new Date(data.inTime);
-        const outTime = new Date(data.outTime);
-        const scheduleInTime = new Date(schedules[0].inTime);
-        const scheduleOutTime = new Date(schedules[0].outTime);
+        const timeIn = new Date(data.time.timeIn);
+        const timeOut = new Date(data.time.timeOut);
+        const overtimeIn = new Date(data.time.overtimeIn);
+        const overtimeOut = new Date(data.time.overtimeOut);
+        const scheduleTimeIn = new Date(schedules[0].timeIn);
+        const scheduleTimeOut = new Date(schedules[0].timeOut);
+        const scheduleBreakOut = new Date(schedules[0].breakOut);
 
-        if (!data.outTime) {
-          return { ...data, status: "ERROR", outTime: "" };
+        if (!data.time.timeOut && !data.time.breakIn) {
+          return { ...data, breakStatus: "ERROR", status: "ERROR" };
         }
 
-        if (!data.inTime) {
-          return { ...data, status: "ERROR", inTime: "" };
+        if (!data.time.timeIn || !data.time.timeOut) {
+          return { ...data, breakStatus: "ERROR", status: "ERROR" };
         }
 
-        if (inTime.getUTCHours() <= scheduleInTime.getUTCHours()) {
+        if (
+          data.time.timeIn &&
+          !data.time.timeOut &&
+          data.time.breakIn &&
+          !data.time.breakOut
+        ) {
+          return { ...data, status: "HALFDAY" };
+        }
+
+        let breakStatus =
+          data.time.breakOut > scheduleBreakOut ? "OVERBREAK" : "ONTIME";
+
+        if (timeIn.getUTCHours() <= scheduleTimeIn.getUTCHours()) {
           if (
-            outTime.getUTCHours() < 17 &&
-            outTime.getUTCMinutes() > 0 &&
-            outTime.getUTCMinutes() <= 50
+            timeOut.getUTCHours() < 17 &&
+            timeOut.getUTCMinutes() > 0 &&
+            timeOut.getUTCMinutes() <= 50
           ) {
-            return { ...data, status: "UNDERTIME" };
-          } else if (outTime.getUTCHours() > 17) {
+            return { ...data, breakStatus, status: "UNDERTIME" };
+          } else if (
+            timeOut.getUTCHours() > 17 &&
+            timeOut.getUTCMinutes() >= 30
+          ) {
             const overtimeDuration =
-              outTime.getUTCHours() - scheduleOutTime.getUTCHours();
+              overtimeOut.getUTCHours() - overtimeIn.getUTCHours();
             return {
               ...data,
               overtimeHour: overtimeDuration,
+              breakStatus,
               status: "OVERTIME",
             };
           } else {
-            return { ...data, status: "ONTIME" };
+            return { ...data, breakStatus, status: "ONTIME" };
           }
-        } else if (inTime.getUTCHours() >= scheduleInTime.getUTCHours()) {
-          return { ...data, status: "LATE" };
+        } else if (timeIn.getUTCHours() >= scheduleTimeIn.getUTCHours()) {
+          return { ...data, breakStatus, status: "LATE" };
         } else {
-          // Handle default case or throw an error
           throw new Error("Unhandled case");
         }
       } catch (error) {
-        // Handle errors appropriately
         console.error(
           `Error processing attendance for employee ${data.employeeID}: ${error.message}`
         );
-        // You can choose to return a default status or handle the error in another way.
-        return { ...data, status: "ERROR" };
+        return { ...data, breakStatus, status: "ERROR" };
       }
     })
   );
