@@ -6,7 +6,8 @@ export const attendanceStatusEnum = [
   "OVERTIME",
   "ERROR",
 ];
-export const breakStatusEnum = ["OVERBREAK", "ONTIME"];
+export const breakStatusEnum = ["OVERBREAK", "ONTIME", "ERROR"];
+export const remarksEnum = ["WHOLEDAY", "HALFDAY"];
 export const leaveTypeEnum = [
   "SickLeave",
   "VacationLeave",
