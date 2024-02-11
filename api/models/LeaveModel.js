@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { leaveTypeEnum } from "../constant/enums";
+import { leaveTypeEnum } from "../constant/enums.js";
 
 const leavesSchema = new mongoose.Schema(
   {
