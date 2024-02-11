@@ -52,7 +52,6 @@ const register = async (req, res) => {
 
     res.status(201).json({
       message: "Employee account created successfully",
-      employee: savedEmployee,
     });
   } catch (error) {
     res.status(500).json({
@@ -66,7 +65,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   // Verify username and password
   const { email, password } = req.body;
-  const user = await Employee.findOne({ email });
+  const user = await Employee.findOne({ email }).select("-password");
 
   if (!user || !bcrypt.compareSync(password, user.password)) {
     return res.status(401).json({ message: "Authentication failed" });
