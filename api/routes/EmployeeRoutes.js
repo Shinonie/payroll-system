@@ -7,8 +7,8 @@ import {
 } from "../controllers/EmployeeController.js";
 import { isAdmin } from "../middlewares/permission.js";
 
-router.post("/change-password/:id", ChangePassword);
-router.post("/edit-profile/:id", EditProfile);
+router.put("/change-password/:id", ChangePassword);
+router.put("/edit-profile/:id", EditProfile);
 router.get("/employees", GetAllEmployee);
 
 export default router;
