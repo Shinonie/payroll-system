@@ -12,6 +12,7 @@ import PayrollRoutes from "./routes/PayrollRoutes.js";
 import TaxesRoute from "./routes/TaxesRoutes.js";
 import EmployeeRoutes from "./routes/EmployeeRoutes.js";
 import LeaveRoutes from "./routes/LeaveRoutes.js";
+import DeductionRoutes from "./routes/DeductionRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -32,6 +33,7 @@ app.use("/api/payroll", PayrollRoutes);
 app.use("/api/taxes", TaxesRoute);
 app.use("/api/employee", EmployeeRoutes);
 app.use("/api/leave", LeaveRoutes);
+app.use("/api/deduction", DeductionRoutes);
 
 app.get("/", (_, res) => res.send("SERVER IS READY!"));
 
