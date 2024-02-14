@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 // ROOT ROUTES
 app.use("/api/auth", AuthRoutes);
-app.use("/api/upload", AttendanceRoutes);
+app.use("/api/attendance", AttendanceRoutes);
 app.use("/api/schedule", ScheduleController);
 app.use("/api/payroll", PayrollRoutes);
 app.use("/api/taxes", TaxesRoute);

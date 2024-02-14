@@ -21,7 +21,6 @@ const payrollSchema = new mongoose.Schema(
     totalGrossPay: { type: Number, required: true },
     totalNetPay: { type: Number, required: true },
     status: { type: Boolean, required: true, default: false },
-    adjustment: { type: Boolean, default: false },
   },
   {
     timestamps: true,

@@ -20,12 +20,16 @@ export const AttendanceStatusSetter = async (attendances) => {
         const scheduleTimeOut = new Date(schedules[0].timeOut);
         const scheduleBreakOut = new Date(schedules[0].breakOut);
 
-        if (!data.time.timeOut && !data.time.breakIn) {
-          return { ...data, breakStatus: "ERROR", status: "ERROR" };
+        if (!data.time.breakIn || !data.time.breakOut) {
+          return { ...data, breakStatus: "ERROR" };
+        }
+
+        if (data.time.breakOut > scheduleBreakOut) {
+          return { ...data, breakStatus: "ERROR" };
         }
 
         if (!data.time.timeIn || !data.time.timeOut) {
-          return { ...data, breakStatus: "ERROR", status: "ERROR" };
+          return { ...data, status: "ERROR" };
         }
 
         if (

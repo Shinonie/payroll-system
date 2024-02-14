@@ -21,13 +21,23 @@ const AttendanceSchema = new mongoose.Schema(
       overTimeOut: { type: String },
       overtimeHour: { type: Number },
     },
-    status: { type: String, required: true, enum: attendanceStatusEnum },
-    breakStatus: { type: String, required: true, enum: breakStatusEnum },
+    status: {
+      type: String,
+      required: true,
+      default: "ONTIME",
+      enum: attendanceStatusEnum,
+    },
+    breakStatus: {
+      type: String,
+      default: "ONTIME",
+      enum: breakStatusEnum,
+    },
     remarks: {
       type: String,
       default: "WHOLEDAY",
       enum: remarksEnum,
     },
+    adjustment: { type: Boolean, default: false },
   },
   {
     timestamps: true,

@@ -3,6 +3,8 @@ import csvtojson from "csvtojson";
 import Attendance from "../models/AttendanceModel.js";
 import { AttendanceStatusSetter } from "../utils/AttendanceStatusSetter.js";
 import { AttendanceTableSetter } from "../utils/AttendanceTableSetter.js";
+import Adjustment from "../models/AdjustmentModel.js";
+import { TimeCalculator } from "../utils/TimeCalculator.js";
 
 const upload = multer({ dest: "../uploads" });
 
@@ -21,7 +23,9 @@ const uploadAttendanceCSV = async (req, res) => {
     const formattedData = await AttendanceStatusSetter(formattedTable);
     await Attendance.insertMany(formattedData);
 
-    res.status(200).json({ message: "File uploaded successfully" });
+    res
+      .status(200)
+      .json({ message: "File uploaded successfully", formattedTable });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -47,37 +51,53 @@ const getAllAttendanceEmployee = async (req, res) => {
   }
 };
 
-const updateAttendanceRecord = async (req, res) => {
-  const { employeeID } = req.params;
+const updateAttendanceTime = async (req, res) => {
   try {
-    const { date, newStatus, inTime, outTime } = req.body;
+    const { employeeID, id } = req.params;
+    const { timeIn, timeOut, breakIn, breakOut } = req.body;
 
-    if (!employeeID || !date || !newStatus) {
-      return res
-        .status(400)
-        .json({ error: "EmployeeID, date, and newStatus are required" });
+    const attendance = await Attendance.findById(id);
+
+    if (!attendance) {
+      return res.status(404).json({ error: "Attendance record not found" });
     }
 
-    const existingRecord = await Attendance.findOne({
+    if (timeIn) {
+      attendance.time.timeIn = timeIn;
+    }
+    if (timeOut) {
+      attendance.time.timeOut = timeOut;
+    }
+    if (breakIn) {
+      attendance.time.breakIn = breakIn;
+    }
+    if (breakOut) {
+      attendance.time.breakOut = breakOut;
+    }
+    if (attendance.status == "ERROR") attendance.status = "ONTIME";
+    if (attendance.breakStatus == "ERROR") attendance.status = "ONTIME";
+
+    attendance.adjustment = true;
+
+    const totalworkupdate = TimeCalculator([attendance]);
+
+    const adjustment = new Adjustment({
       employeeID,
-      date,
-      status: "ERROR",
+      adjustment: {
+        type: "ATTENDANCE",
+        attendance: attendance.time,
+        workHours: Number(totalworkupdate),
+      },
     });
 
-    if (!existingRecord) {
-      return res.status(404).json({
-        message:
-          "Attendance record not found with status 'ERROR' and the provided EmployeeID",
-      });
-    }
+    await attendance.save();
+    await adjustment.save();
 
-    existingRecord.status = newStatus;
-    existingRecord.inTime = inTime || existingRecord.inTime;
-    existingRecord.outTime = outTime || existingRecord.outTime;
-
-    await existingRecord.save();
-
-    res.status(200).json({ message: "Attendance record updated successfully" });
+    res.status(200).json({
+      message: "Attendance time updated successfully",
+      updatedAttendance: attendance,
+      totalworkupdate,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -88,5 +108,5 @@ export {
   uploadAttendanceCSV,
   upload,
   getAllAttendanceEmployee,
-  updateAttendanceRecord,
+  updateAttendanceTime,
 };

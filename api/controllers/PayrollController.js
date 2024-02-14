@@ -1,6 +1,7 @@
 import Payroll from "../models/PayrollModel.js";
 import Attendance from "../models/AttendanceModel.js";
 import Deduction from "../models/DeductionModel.js";
+import Adjustment from "../models/AdjustmentModel.js";
 import { TimeCalculator } from "../utils/TimeCalculator.js";
 import {
   SSSEEContribution,
@@ -19,7 +20,15 @@ const createPayroll = async (req, res) => {
     allowance,
   } = req.body;
   try {
-    const employeeAttendance = await Attendance.find({ employeeID });
+    const employeeAttendance = await Attendance.find({
+      employeeID,
+      adjustment: false,
+    });
+
+    const employeeAdjustment = await Adjustment.find({
+      employeeID,
+      status: false,
+    });
 
     employeeAttendance.map(
       (attendance) =>
@@ -62,6 +71,8 @@ const createPayroll = async (req, res) => {
     const totalDaysPresent = employeeAttendance.length;
     const overtimeRate = hourlyRate * 1.25;
     const overtimePay = totalOvertimeHours * overtimeRate;
+    const totalAdjustmentPay =
+      Number(employeeAdjustment[0]?.adjustment?.workHours[0]) * hourlyRate || 0;
 
     const totalWorkHours = totalOvertimeHours + totalRegularHour;
 
@@ -77,7 +88,14 @@ const createPayroll = async (req, res) => {
       PhilHealth = await PhilHealthContribution(montlySalary);
       incomeTax = IncomeTaxContribution(montlySalary);
     }
-    const totalGrossPay = totalWorkHours * hourlyRate + overtimePay;
+    const allowanceNumber = Number(allowance);
+    const incentivesNumber = Number(incentives);
+    const totalGrossPay =
+      totalWorkHours * hourlyRate +
+      overtimePay +
+      allowanceNumber +
+      incentivesNumber +
+      totalAdjustmentPay;
 
     let totalNetPay;
     if (totalWorkHours >= 120) {
@@ -122,9 +140,11 @@ const createPayroll = async (req, res) => {
 
     const savePayroll = await newPayroll.save();
 
-    res
-      .status(201)
-      .json({ message: "Payroll created successfully", payroll: savePayroll });
+    res.status(201).json({
+      message: "Payroll created successfully",
+      payroll: savePayroll,
+      employeeAdjustment,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
