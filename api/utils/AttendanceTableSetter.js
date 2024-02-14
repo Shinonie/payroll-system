@@ -1,3 +1,16 @@
+import { parse, format } from "date-fns";
+
+const dateFormatISO = (dateString) => {
+  // Define the input and output date formats
+  const inputFormat = "M/dd/yyyy HH:mm";
+
+  const parsedDate = parse(dateString, inputFormat, new Date());
+
+  const isoDate = format(parsedDate, "yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+  return isoDate;
+};
+
 export const AttendanceTableSetter = async (entries) => {
   const groupedEntries = [];
 
@@ -7,16 +20,18 @@ export const AttendanceTableSetter = async (entries) => {
         const { ID, Time } = entry;
         const [date, time] = Time.split(" ");
 
-        const entryDate = new Date(date).toISOString();
+        const entryDate = dateFormatISO(Time);
 
         let existingEntry = groupedEntries.find(
-          (e) => e.employeeID === ID && e.date === entryDate
+          (e) =>
+            e.employeeID === ID &&
+            e.date.split("T")[0] === entryDate.split("T")[0]
         );
 
         if (!existingEntry) {
           existingEntry = {
             employeeID: ID,
-            date: new Date(date).toISOString(),
+            date: dateFormatISO(Time),
             time: {
               timeIn: null,
               breakIn: null,
@@ -31,17 +46,17 @@ export const AttendanceTableSetter = async (entries) => {
 
         // Assign times from the entry if not already assigned
         if (!existingEntry.time.timeIn) {
-          existingEntry.time.timeIn = new Date(Time).toISOString();
+          existingEntry.time.timeIn = dateFormatISO(Time);
         } else if (!existingEntry.time.breakIn) {
-          existingEntry.time.breakIn = new Date(Time).toISOString();
+          existingEntry.time.breakIn = dateFormatISO(Time);
         } else if (!existingEntry.time.breakOut) {
-          existingEntry.time.breakOut = new Date(Time).toISOString();
+          existingEntry.time.breakOut = dateFormatISO(Time);
         } else if (!existingEntry.time.timeOut) {
-          existingEntry.time.timeOut = new Date(Time).toISOString();
+          existingEntry.time.timeOut = dateFormatISO(Time);
         } else if (!existingEntry.time.overtimeIn) {
-          existingEntry.time.overtimeIn = new Date(Time).toISOString();
+          existingEntry.time.overtimeIn = dateFormatISO(Time);
         } else if (!existingEntry.time.overtimeOut) {
-          existingEntry.time.overtimeOut = new Date(Time).toISOString();
+          existingEntry.time.overtimeOut = dateFormatISO(Time);
         }
       } catch (error) {
         console.error("Error processing entry:", error);

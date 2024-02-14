@@ -48,7 +48,7 @@ const register = async (req, res) => {
       userType,
     });
 
-    const savedEmployee = await newEmployee.save();
+    await newEmployee.save();
 
     res.status(201).json({
       message: "Employee account created successfully",

@@ -1,24 +1,16 @@
 import mongoose from "mongoose";
-import { leaveTypeEnum } from "../constant/enums";
 
 const adjustmentSchema = new mongoose.Schema(
   {
     employeeID: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "Employee",
     },
-    PayrollAdjustmentID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Payroll",
-    },
-    LeaveAdjustmentID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Leave",
-    },
-    Status: { type: String },
+    status: { type: Boolean, default: false },
   },
   {
     timestamps: true,
+    strict: false,
   }
 );
 
