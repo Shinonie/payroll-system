@@ -56,12 +56,12 @@ const getScheduleById = async (req, res) => {
 
 const updateSchedule = async (req, res) => {
   const scheduleId = req.params.id;
-  const { date, inTime, outTime } = req.body;
+  const { date, timeIn, timeOut, breakIn, breakOut } = req.body;
 
   try {
     const schedule = await Schedule.findByIdAndUpdate(
       scheduleId,
-      { date, inTime, outTime },
+      { date, timeIn, timeOut, breakIn, breakOut },
       { new: true }
     );
 
