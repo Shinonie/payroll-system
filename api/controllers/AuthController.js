@@ -65,7 +65,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   // Verify username and password
   const { email, password } = req.body;
-  const user = await Employee.findOne({ email }).select("-password");
+  const user = await Employee.findOne({ email });
 
   if (!user || !bcrypt.compareSync(password, user.password)) {
     return res.status(401).json({ message: "Authentication failed" });
