@@ -38,6 +38,7 @@ const AttendanceSchema = new mongoose.Schema(
       enum: remarksEnum,
     },
     adjustment: { type: Boolean, default: false },
+    payrollStatus: { type: Boolean, default: false },
   },
   {
     timestamps: true,

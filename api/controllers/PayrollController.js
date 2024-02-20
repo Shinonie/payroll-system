@@ -22,37 +22,56 @@ const createPayroll = async (req, res) => {
   try {
     const employeeAttendance = await Attendance.find({
       employeeID,
-      adjustment: false,
+      payrollStatus: false,
     });
+
+    if (employeeAttendance.length == 0) {
+      return res.status(404).json({ message: "No Active Payroll" });
+    }
 
     const employeeAdjustment = await Adjustment.find({
       employeeID,
       status: false,
     });
 
-    employeeAttendance.map(
-      (attendance) =>
-        attendance.status === "ERROR" &&
-        res
-          .status(500)
-          .json({ message: "Attendance Field have no time in or time out" })
+    const totalAdjustmentHour = employeeAdjustment.reduce(
+      (total, adjustment) => {
+        const workHours = adjustment.adjustment.workHours || 0; // Handle cases where workHours might be undefined
+        return total + workHours;
+      },
+      0
     );
 
-    const overtimeRecords = employeeAttendance
-      .filter((attendance) => attendance.status === "OVERTIME")
-      .map((attendance) => ({
-        overtimeHour: attendance.overtimeHour,
-      }));
+    const attendanceError = employeeAttendance
+      .filter((attendance) => attendance.status === "ERROR")
+      .map((attendance) => attendance.time);
 
-    const late = employeeAttendance.filter(
-      (attendance) => attendance.status === "LATE"
+    const attendanceSummary = employeeAttendance.reduce(
+      (summary, attendance) => {
+        switch (attendance.status) {
+          case "OVERTIME":
+            summary.overtimeRecords.push({
+              overtimeHour: attendance.overtimeHour,
+            });
+            break;
+          case "LATE":
+            summary.late.push(attendance);
+            break;
+          case "ONTIME":
+            summary.ontime.push(attendance);
+            break;
+          case "UNDERTIME":
+            summary.undertime.push(attendance);
+            break;
+          default:
+            summary.other.push(attendance);
+        }
+        return summary;
+      },
+      { overtimeRecords: [], late: [], ontime: [], undertime: [], other: [] }
     );
-    const ontime = employeeAttendance.filter(
-      (attendance) => attendance.status === "ONTIME"
-    );
-    const undertime = employeeAttendance.filter(
-      (attendance) => attendance.status === "UNDERTIME"
-    );
+
+    const { overtimeRecords, late, ontime, undertime } = attendanceSummary;
 
     const mergedAttendance = [...late, ...ontime, ...undertime];
 
@@ -71,8 +90,7 @@ const createPayroll = async (req, res) => {
     const totalDaysPresent = employeeAttendance.length;
     const overtimeRate = hourlyRate * 1.25;
     const overtimePay = totalOvertimeHours * overtimeRate;
-    const totalAdjustmentPay =
-      Number(employeeAdjustment[0]?.adjustment?.workHours[0]) * hourlyRate || 0;
+    const totalAdjustmentPay = Number(totalAdjustmentHour) * hourlyRate || 0;
 
     const totalWorkHours = totalOvertimeHours + totalRegularHour;
 
@@ -132,11 +150,20 @@ const createPayroll = async (req, res) => {
       overtimeHours: totalOvertimeHours,
       totalHours: totalWorkHours,
       totalDeductions: totalWorkHours >= 120 ? totalDeductions._id : null,
+      ...(employeeAdjustment.length > 0 && { employeeAdjustment }),
       incentives,
       allowance,
       totalGrossPay: totalGrossPay.toFixed(2),
       totalNetPay: totalNetPay.toFixed(2),
     });
+
+    await Attendance.updateMany(
+      {
+        employeeID,
+        payrollStatus: false,
+      },
+      { $set: { payrollStatus: true } }
+    );
 
     const savePayroll = await newPayroll.save();
 
@@ -144,6 +171,14 @@ const createPayroll = async (req, res) => {
       message: "Payroll created successfully",
       payroll: savePayroll,
       employeeAdjustment,
+      ...(employeeAdjustment.length > 0 && { employeeAdjustment }),
+      ...(attendanceError.length > 0 && {
+        attendanceError: {
+          message:
+            "Please settle your attendance error to the admin office. The payment will release on next payroll",
+          attendanceError,
+        },
+      }),
     });
   } catch (error) {
     console.error(error);
@@ -155,10 +190,9 @@ const getPayrollByEmployee = async (req, res) => {
   const { employeeID } = req.params;
 
   try {
-    const payroll = await Payroll.findById(employeeID).populate(
-      "totalDeductions"
-    );
-
+    const payroll = await Payroll.find({ employeeID })
+      .populate("totalDeductions")
+      .populate("adjustment");
     if (!payroll) {
       return res.status(404).json({ message: "Payroll not found" });
     }

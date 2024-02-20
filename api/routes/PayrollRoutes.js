@@ -9,7 +9,7 @@ import {
 } from "../controllers/PayrollController.js";
 
 router.post("/payroll", createPayroll);
-router.get("/payroll/:id", getPayrollByEmployee);
+router.get("/payroll/:employeeID", getPayrollByEmployee);
 router.put("/payroll/:id", updatePayroll);
 router.delete("/payroll/:id", deletePayroll);
 
