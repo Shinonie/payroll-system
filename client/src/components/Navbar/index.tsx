@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
     return (
-        <nav className="md:h-screen w-[400px] bg-accent-foreground flex flex-col gap-5 py-5 px-8 text-accent">
+        <nav className="md:h-screen w-[400px] md:fixed bg-accent-foreground flex flex-col gap-5 py-5 px-8 text-accent">
             <div className="mx-5 grid place-items-center">
                 <img className="w-20 h-20" src={logo} alt="Company Logo" />
             </div>

@@ -1,9 +1,40 @@
 import logo from '@/assets/logo.png';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { useForm } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage
+} from '@/components/ui/form';
+import { useState } from 'react';
+import { login } from '@/api/services/AuthServices';
+
+const formSchema = z.object({
+    email: z.string().min(1, { message: 'This field has to be filled.' }).email(),
+    password: z.string().min(1, { message: 'This field has to be filled.' })
+});
 
 const Login = () => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            email: '',
+            password: ''
+        }
+    });
+
+    const onSubmit = async (values: any) => {
+        await login(values);
+    };
     return (
         <div className="flex w-full h-full">
             <div className="hidden xl:flex hero  justify-center items-center bg-accent-foreground w-1/2">
@@ -18,25 +49,56 @@ const Login = () => {
                 <h1 className="max-sm:mt-20 text-4xl">WELCOME BACK</h1>
                 <div className="w-1/2">
                     <div className="flex flex-col gap-2 mt-5">
-                        <div className="input">
-                            <h1>Username</h1>
-                            <Input placeholder="Username" />
-                        </div>
-                        <div className="input">
-                            <h1>PASSWORD</h1>
-                            <Input placeholder="********" type="password" />
-                            <div className="flex items-center gap-2 mt-3">
-                                <Checkbox id="show-password" />
-                                <label
-                                    htmlFor="show-password"
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                    Show password
-                                </label>
-                            </div>
-                        </div>
-                        <Button className="w-full text-background bg-accent hover:bg-accent-foreground hover:text-slate-400">
-                            LOGIN
-                        </Button>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Email</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="email" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="password"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Password</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    placeholder="••••••••"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <div className="flex items-center gap-2 mt-3">
+                                    <Checkbox
+                                        id="show-password"
+                                        onCheckedChange={() => setShowPassword(!showPassword)}
+                                    />
+                                    <label
+                                        htmlFor="show-password"
+                                        className="text-sm font-medium leading-none  cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                        Show password
+                                    </label>
+                                </div>
+                                <Button
+                                    className="w-full text-background bg-accent hover:bg-accent-foreground hover:text-slate-400"
+                                    type="submit">
+                                    Sign in
+                                </Button>
+                            </form>
+                        </Form>
                     </div>
                 </div>
             </div>
