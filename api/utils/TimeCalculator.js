@@ -7,6 +7,6 @@ export const TimeCalculator = (mergedAttendance) => {
 
     const hoursDifference = timeDifference / (1000 * 60 * 60);
 
-    return hoursDifference.toFixed(2);
+    return parseFloat(hoursDifference.toFixed(2));
   });
 };

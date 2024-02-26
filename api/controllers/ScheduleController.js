@@ -13,8 +13,11 @@ const createSchedule = async (req, res) => {
       timeOut: schedule.timeOut,
     }));
 
+    const range =
+      schedules[0].date + " " + schedules[schedules.length - 1].date;
+
     for (const schedule of schedules) {
-      await Schedule.create(schedule);
+      await Schedule.create({ ...schedule, range });
     }
 
     res.status(201).json({

@@ -9,8 +9,10 @@ export const attendanceStatusEnum = [
 export const breakStatusEnum = ["OVERBREAK", "ONTIME", "ERROR"];
 export const remarksEnum = ["WHOLEDAY", "HALFDAY"];
 export const leaveTypeEnum = [
-  "SickLeave",
-  "VacationLeave",
-  "ParentalLeave",
-  "RegularLeave",
+  "sick leave",
+  "vacation leave",
+  "maternal leave",
+  "parental leave",
+  "regular leave",
 ];
+export const statusEnum = ["APPROVE", "PENDING", "REJECTED"];

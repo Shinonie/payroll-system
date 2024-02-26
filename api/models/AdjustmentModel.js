@@ -6,6 +6,7 @@ const adjustmentSchema = new mongoose.Schema(
       type: String,
       ref: "Employee",
     },
+    nextPayroll: { type: Boolean, default: true },
     status: { type: Boolean, default: false },
   },
   {

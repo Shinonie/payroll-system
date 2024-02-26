@@ -1,4 +1,5 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Root from '@/layout';
 import AdminLayout from '@/layout/AdminLayout';
 import EmployeeLayout from '@/layout/EmployeeLayout';
@@ -13,6 +14,7 @@ import AttendanceEmployee from '@/pages/Employee/Attendance';
 import ScheduleEmployee from '@/pages/Employee/Schedule';
 import PayrollEmployee from '@/pages/Employee/Payroll';
 import LeaveEmployee from '@/pages/Employee/Leave';
+import PrivateRoute from '@/components/PrivateRoute';
 
 const router = createBrowserRouter([
     {
@@ -49,27 +51,33 @@ const router = createBrowserRouter([
         children: [
             {
                 path: '',
-                element: <AttendanceEmployee />
-            },
-            {
-                path: 'attendance',
-                element: <AttendanceEmployee />
-            },
-            {
-                path: 'payroll',
-                element: <PayrollEmployee />
-            },
-            {
-                path: 'leave',
-                element: <LeaveEmployee />
-            },
-            {
-                path: 'profile',
-                element: <AttendanceEmployee />
-            },
-            {
-                path: 'schedule',
-                element: <ScheduleEmployee />
+                element: <PrivateRoute allowedRoles={['EMPLOYEE']} />,
+                children: [
+                    {
+                        path: '',
+                        element: <ScheduleEmployee />
+                    },
+                    {
+                        path: 'attendance',
+                        element: <AttendanceEmployee />
+                    },
+                    {
+                        path: 'payroll',
+                        element: <PayrollEmployee />
+                    },
+                    {
+                        path: 'leave',
+                        element: <LeaveEmployee />
+                    },
+                    {
+                        path: 'profile',
+                        element: <AttendanceEmployee />
+                    },
+                    {
+                        path: 'schedule',
+                        element: <ScheduleEmployee />
+                    }
+                ]
             }
         ]
     },
@@ -85,8 +93,14 @@ const router = createBrowserRouter([
     }
 ]);
 
+const queryClient = new QueryClient();
 function App() {
-    return <RouterProvider router={router} />;
+    return (
+        <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        </QueryClientProvider>
+    );
 }
 
 export default App;

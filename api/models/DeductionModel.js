@@ -7,6 +7,7 @@ const deductionSchema = new mongoose.Schema(
       ref: "Employee",
       required: true,
     },
+    payrollID: { type: String, required: true },
     SSS: { type: Number, required: true },
     SSSLoan: { type: Number, required: true },
     Pagibig: { type: Number, required: true },

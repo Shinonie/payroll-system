@@ -7,38 +7,32 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select';
+import { GetUserAttendance } from '@/api/services/employee/Attendance';
+import { useEffect, useState } from 'react';
+import { useUserStore } from '@/store/useUserStore';
 
 const Attendance = () => {
+    const userId = useUserStore().userId;
+
+    const [attendanceData, setAttendanceData] = useState([]);
+
+    useEffect(() => {
+        const fetchAttendance = async () => {
+            try {
+                const attendance = await GetUserAttendance(userId);
+                setAttendanceData(attendance);
+            } catch (error) {
+                console.error('Error fetching attendance:', error);
+            }
+        };
+
+        fetchAttendance();
+    }, [userId]);
+
     return (
         <div className="w-full p-10">
             <div className="mb-10">
-                <h1 className="text-xl">Attendance ID: #032621</h1>
-                <h1 className="text-2xl font-semibold flex flex-wrap gap-5">
-                    <span>PERIOD: </span>
-                    <Select>
-                        <SelectTrigger className="w-[300px]">
-                            <SelectValue placeholder="February 1, 2024 to February 15, 2024" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="light">
-                                January 1, 2024 to February 15, 2024
-                            </SelectItem>
-                            <SelectItem value="dark">
-                                January 16, 2024 to February 31, 2024
-                            </SelectItem>
-                            <SelectItem value="system">
-                                February 1, 2024 to February 15, 2024
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                </h1>
+                <h1 className="text-2xl font-semibold">My Daily Attendance</h1>
             </div>
             <div>
                 <Table>
@@ -56,156 +50,39 @@ const Attendance = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody className="bg-accent-foreground ">
-                        <TableRow>
-                            <TableCell className="font-medium">February 1, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 2, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 3, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 4, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 5, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 6, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 7, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 8, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 9, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 10, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 1, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 12, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 13, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 14, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-medium">February 15, 2024</TableCell>
-                            <TableCell>8:00 AM</TableCell>
-                            <TableCell>12:00 PM</TableCell>
-                            <TableCell>01:00 PM</TableCell>
-                            <TableCell>5:00 PM</TableCell>
-                            <TableCell>5:30 PM</TableCell>
-                            <TableCell>8:00 PM</TableCell>
-                            <TableCell>WHOLE DAY</TableCell>
-                        </TableRow>
+                        {attendanceData?.map((item: any, index: any) => (
+                            <TableRow key={index}>
+                                <TableCell className="font-medium">
+                                    {new Date(item.date).toLocaleDateString('en-US', {
+                                        month: 'long',
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                    })}
+                                </TableCell>
+                                <TableCell>{item.time.timeIn.substring(11, 19)}</TableCell>
+                                <TableCell>{item.time.breakIn.substring(11, 19)}</TableCell>
+                                <TableCell>{item.time.breakOut.substring(11, 19)}</TableCell>
+                                <TableCell>
+                                    {item.time.timeOut
+                                        ? item.time.timeOut.substring(11, 19)
+                                        : 'ERROR'}
+                                </TableCell>
+                                <TableCell>
+                                    {item.time.overTimeIn
+                                        ? item.time.overTimeIn.substring(11, 19)
+                                        : 'No Overtime'}
+                                </TableCell>
+                                <TableCell>
+                                    {item.time.overTimeIn
+                                        ? item.time.overTimeOut.substring(11, 19)
+                                        : 'No Overtime'}
+                                </TableCell>
+                                <TableCell
+                                    className={`${item.remarks == 'ERROR' ? 'bg-red-200 text-red-700' : ''}`}>
+                                    {item.remarks}
+                                </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </div>
