@@ -13,8 +13,11 @@ import {
     FormLabel,
     FormMessage
 } from '@/components/ui/form';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { login } from '@/api/services/AuthServices';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useUserStore } from '@/store/useUserStore';
 
 const formSchema = z.object({
     email: z.string().min(1, { message: 'This field has to be filled.' }).email(),
@@ -22,6 +25,20 @@ const formSchema = z.object({
 });
 
 const Login = () => {
+    const accessToken = useAuthStore((state) => state.accessToken);
+    const userType = useAuthStore((state) => state.userType);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (accessToken) {
+            if (userType === 'EMPLOYEE') {
+                navigate('/employee');
+            }
+        } else {
+            navigate('/login');
+        }
+    }, []);
+
     const [showPassword, setShowPassword] = useState(false);
 
     const form = useForm({
@@ -32,8 +49,24 @@ const Login = () => {
         }
     });
 
+    const setUserType = useAuthStore((state) => state.setUserType);
+    const setAccessToken = useAuthStore((state) => state.setAccessToken);
+    const setUserDetails = useUserStore((state) => state.setUserDetails);
+
     const onSubmit = async (values: any) => {
-        await login(values);
+        try {
+            const data = await login(values);
+
+            setUserType(data.user.userType);
+            setAccessToken(data.user.accessToken);
+            setUserDetails(data.user.id, data.user.email, data.user.fullname);
+
+            if (data.user.userType === 'EMPLOYEE') {
+                navigate('/employee');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+        }
     };
     return (
         <div className="flex w-full h-full">

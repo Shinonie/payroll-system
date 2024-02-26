@@ -2,8 +2,17 @@ import Leaves from "../models/LeaveModel.js";
 
 const createLeave = async (req, res) => {
   const { employeeID, leaveType, startDate, endDate, totalDays } = req.body;
-
   try {
+    const pendingLeave = await Leaves.findOne({
+      employeeID,
+      status: "PENDING",
+    });
+    if (pendingLeave) {
+      return res.status(400).json({
+        message: "There's already a pending leave request for this employee",
+      });
+    }
+
     const newLeave = new Leaves({
       employeeID,
       leaveType,
@@ -24,10 +33,10 @@ const createLeave = async (req, res) => {
 };
 
 const getLeaveById = async (req, res) => {
-  const leaveId = req.params.id;
+  const employeeID = req.params.id;
 
   try {
-    const leave = await Leaves.findById(leaveId);
+    const leave = await Leaves.find({ employeeID });
 
     if (!leave) {
       return res.status(404).json({ message: "Leave request not found" });

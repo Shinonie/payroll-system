@@ -2,6 +2,7 @@ import Payroll from "../models/PayrollModel.js";
 import Attendance from "../models/AttendanceModel.js";
 import Deduction from "../models/DeductionModel.js";
 import Adjustment from "../models/AdjustmentModel.js";
+import Employee from "../models/EmployeeModel.js";
 import { TimeCalculator } from "../utils/TimeCalculator.js";
 import {
   SSSEEContribution,
@@ -22,6 +23,7 @@ const createPayroll = async (req, res) => {
   try {
     const employeeAttendance = await Attendance.find({
       employeeID,
+      adjustment: false,
       payrollStatus: false,
     });
 
@@ -29,9 +31,23 @@ const createPayroll = async (req, res) => {
       return res.status(404).json({ message: "No Active Payroll" });
     }
 
+    const employee = await Employee.find({
+      controlNumber: employeeID,
+      adjustment: true,
+    });
+
+    let statusValue;
+    let nextPayrollValue;
+
+    if (employee.length > 0) {
+      nextPayrollValue = true;
+      statusValue = false;
+    }
+
     const employeeAdjustment = await Adjustment.find({
       employeeID,
-      status: false,
+      nextPayroll: { $eq: nextPayrollValue },
+      status: { $eq: statusValue },
     });
 
     const totalAdjustmentHour = employeeAdjustment.reduce(
@@ -76,7 +92,7 @@ const createPayroll = async (req, res) => {
     const mergedAttendance = [...late, ...ontime, ...undertime];
 
     const totalOvertimeHours = overtimeRecords.reduce(
-      (total, attendance) => total + attendance.overtimeHour,
+      (total, overtimeHour) => total + Number(overtimeHour),
       0
     );
 
@@ -129,18 +145,7 @@ const createPayroll = async (req, res) => {
       totalNetPay = totalGrossPay; // No deductions if totalWorkHours < 120
     }
 
-    const deduction = new Deduction({
-      employeeID,
-      SSS,
-      SSSLoan,
-      Pagibig,
-      PagibigLoan,
-      PhilHealth,
-      IncomeTax: incomeTax.incomeTax,
-    });
-
-    const totalDeductions =
-      totalWorkHours >= 120 ? await deduction.save() : null;
+    const dateCreated = new Date().toISOString();
 
     const newPayroll = new Payroll({
       employeeID,
@@ -150,6 +155,7 @@ const createPayroll = async (req, res) => {
       overtimeHours: totalOvertimeHours,
       totalHours: totalWorkHours,
       totalDeductions: totalWorkHours >= 120 ? totalDeductions._id : null,
+      dateCreated,
       ...(employeeAdjustment.length > 0 && { employeeAdjustment }),
       incentives,
       allowance,
@@ -165,17 +171,60 @@ const createPayroll = async (req, res) => {
       { $set: { payrollStatus: true } }
     );
 
+    const deduction = new Deduction({
+      payrollID: newPayroll._id,
+      employeeID,
+      SSS,
+      SSSLoan,
+      Pagibig,
+      PagibigLoan,
+      PhilHealth,
+      IncomeTax: incomeTax.incomeTax,
+    });
+
+    const totalDeductions =
+      totalWorkHours >= 120 ? await deduction.save() : null;
+
     const savePayroll = await newPayroll.save();
+
+    const updateAdjustment = await Adjustment.find({
+      employeeID,
+      status: false,
+      nextPayroll: true,
+    });
+
+    if (updateAdjustment.length > 0) {
+      await Employee.findOneAndUpdate(
+        { controlNumber: employeeID, adjustment: false },
+        { $set: { adjustment: true } }
+      );
+    }
+
+    if (employee.length > 0 && updateAdjustment.length > 0) {
+      await Adjustment.findOneAndUpdate(
+        { employeeID, status: false, nextPayroll: true },
+        {
+          $set: {
+            status: true,
+            nextPayroll: false,
+            payrollID: savePayroll._id,
+          },
+        }
+      );
+      await Employee.findOneAndUpdate(
+        { controlNumber: employeeID, adjustment: true },
+        { $set: { adjustment: false } }
+      );
+    }
 
     res.status(201).json({
       message: "Payroll created successfully",
       payroll: savePayroll,
-      employeeAdjustment,
       ...(employeeAdjustment.length > 0 && { employeeAdjustment }),
       ...(attendanceError.length > 0 && {
         attendanceError: {
           message:
-            "Please settle your attendance error to the admin office. The payment will release on next payroll",
+            "Please settle ask for the employee to settle their attendance errors",
           attendanceError,
         },
       }),
@@ -190,14 +239,31 @@ const getPayrollByEmployee = async (req, res) => {
   const { employeeID } = req.params;
 
   try {
-    const payroll = await Payroll.find({ employeeID })
-      .populate("totalDeductions")
-      .populate("adjustment");
-    if (!payroll) {
+    const payrolls = await Payroll.find({ employeeID });
+    const payrollDetails = await Promise.all(
+      payrolls.map(async (payroll) => {
+        const adjustment = await Adjustment.findOne({
+          employeeID,
+          payrollID: payroll._id,
+        });
+        const deduction = await Deduction.findOne({
+          employeeID,
+          payrollID: payroll._id,
+        });
+
+        return {
+          payroll,
+          adjustment,
+          deduction,
+        };
+      })
+    );
+
+    if (!payrolls) {
       return res.status(404).json({ message: "Payroll not found" });
     }
 
-    res.status(200).json(payroll);
+    res.status(200).json(payrollDetails);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

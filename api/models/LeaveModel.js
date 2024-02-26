@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { leaveTypeEnum } from "../constant/enums.js";
+import { leaveTypeEnum, statusEnum } from "../constant/enums.js";
 
 const leavesSchema = new mongoose.Schema(
   {
@@ -15,7 +15,7 @@ const leavesSchema = new mongoose.Schema(
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     totalDays: { type: Number, required: true },
-    status: { type: Boolean, default: false },
+    status: { type: String, enum: statusEnum, default: "PENDING" },
   },
   {
     timestamps: true,

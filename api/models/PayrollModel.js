@@ -16,6 +16,7 @@ const payrollSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Deduction",
     },
+    dateCreated: { type: String, required: true },
     incentives: { type: Number, required: true },
     allowance: { type: Number, required: true },
     totalGrossPay: { type: Number, required: true },

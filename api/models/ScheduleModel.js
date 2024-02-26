@@ -6,6 +6,7 @@ const ScheduleSchema = new mongoose.Schema(
       type: String,
       ref: "Employee",
     },
+    range: { type: String, required: true },
     date: { type: String, required: true },
     timeIn: { type: String, required: true },
     breakIn: { type: String, required: true },

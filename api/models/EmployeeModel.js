@@ -14,6 +14,7 @@ const EmployeeSchema = new mongoose.Schema(
     address: { type: String },
     userType: { type: String, required: true, enum: userTypeEnum },
     archive: { type: Boolean, default: false },
+    adjustment: { type: Boolean, default: false },
   },
   {
     timestamps: true,

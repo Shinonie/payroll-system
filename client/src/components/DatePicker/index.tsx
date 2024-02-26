@@ -8,12 +8,24 @@ import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivElement>) {
+export function DatePickerWithRange({
+    className,
+    onDateChange
+}: {
+    className?: string;
+    onDateChange: (date: DateRange) => void;
+}) {
     const [date, setDate] = React.useState<DateRange | undefined>({
         from: new Date(),
         to: addDays(new Date(), 20)
     });
 
+    // Notify parent component about date change
+    React.useEffect(() => {
+        if (date !== undefined) {
+            onDateChange(date);
+        }
+    }, [date, onDateChange]);
     return (
         <div className={cn('grid gap-2', className)}>
             <Popover>
