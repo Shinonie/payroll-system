@@ -33,6 +33,7 @@ import { formatISO } from 'date-fns';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { CreateLeave, GetUserLeave } from '@/api/services/employee/Leave';
 import { useUserStore } from '@/store/useUserStore';
+import { useToast } from '@/components/ui/use-toast';
 
 const Leave = () => {
     const [leaveStart, setLeaveStart] = useState('');
@@ -40,6 +41,7 @@ const Leave = () => {
     const [leaveType, setLeaveType] = useState('');
     const [status, setStatus] = useState(false);
     const [open, setOpen] = useState(false);
+    const { toast } = useToast();
 
     const employeeID = useUserStore().userId;
 
@@ -53,7 +55,19 @@ const Leave = () => {
     const { mutate } = useMutation({
         mutationFn: CreateLeave,
         onSuccess: () => {
+            toast({
+                title: 'Leave Request',
+                description: 'Leave has been submitted successfully'
+            });
             queryClient.invalidateQueries({ queryKey: ['leave'] });
+        },
+        onError: (error) => {
+            console.log(error);
+            toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'Failed to submit leave request. Please try again later.'
+            });
         }
     });
 

@@ -17,7 +17,9 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
       // Get user from the token
-      req.user = await Employee.findById(decoded.id).select("-password");
+      req.user = await Employee.find({ controllNumber: decoded.id }).select(
+        "-password"
+      );
 
       next();
     } catch (error) {

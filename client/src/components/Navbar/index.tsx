@@ -25,8 +25,8 @@ const Navbar = () => {
                         `${isPending ? 'pending' : isActive ? 'bg-background rounded-lg' : ''}  w-full flex items-center gap-2 p-2 font-semibold`
                     }>
                     <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarImage src="https://github.com/shadcn" alt="@shadcn" />
+                        <AvatarFallback>{fullname.charAt(0).toLocaleUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="md:flex flex-col">
                         <h1 className="text-lg capitalize">{fullname}</h1>

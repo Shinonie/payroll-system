@@ -18,6 +18,7 @@ import { login } from '@/api/services/AuthServices';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useUserStore } from '@/store/useUserStore';
+import { useToast } from '@/components/ui/use-toast';
 
 const formSchema = z.object({
     email: z.string().min(1, { message: 'This field has to be filled.' }).email(),
@@ -28,6 +29,7 @@ const Login = () => {
     const accessToken = useAuthStore((state) => state.accessToken);
     const userType = useAuthStore((state) => state.userType);
     const navigate = useNavigate();
+    const { toast } = useToast();
 
     useEffect(() => {
         if (accessToken) {
@@ -65,6 +67,11 @@ const Login = () => {
                 navigate('/employee');
             }
         } catch (error) {
+            toast({
+                variant: 'destructive',
+                title: 'Uh oh! Something went wrong.',
+                description: 'Password or Email is incorrect'
+            });
             console.error('Login error:', error);
         }
     };
