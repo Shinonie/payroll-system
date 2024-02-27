@@ -15,12 +15,32 @@ const GetAllEmployee = async (req, res) => {
   }
 };
 
+const GetEmployee = async (req, res) => {
+  const { employeeID } = req.params;
+  try {
+    const Employees = await Employee.findOne({
+      userType: "EMPLOYEE",
+      archive: false,
+      controlNumber: employeeID,
+    }).select("-password");
+
+    res.status(200).json(Employees);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 const EditProfile = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedEmployee = await Employee.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const updatedEmployee = await Employee.findOneAndUpdate(
+      { controlNumber: id },
+      req.body,
+      {
+        new: true,
+      }
+    );
     res.status(200).json(updatedEmployee);
   } catch (error) {
     console.error(error);
@@ -34,8 +54,8 @@ const ChangePassword = async (req, res) => {
     const { newPassword } = req.body;
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    const updatedEmployee = await Employee.findByIdAndUpdate(
-      id,
+    const updatedEmployee = await Employee.findOneAndUpdate(
+      { controlNumber: id },
       { password: hashedPassword },
       { new: true }
     );
@@ -47,4 +67,4 @@ const ChangePassword = async (req, res) => {
   }
 };
 
-export { GetAllEmployee, EditProfile, ChangePassword };
+export { GetAllEmployee, EditProfile, ChangePassword, GetEmployee };

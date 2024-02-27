@@ -1,5 +1,6 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@/components/ui/toaster';
 import Root from '@/layout';
 import AdminLayout from '@/layout/AdminLayout';
 import EmployeeLayout from '@/layout/EmployeeLayout';
@@ -14,6 +15,7 @@ import AttendanceEmployee from '@/pages/Employee/Attendance';
 import ScheduleEmployee from '@/pages/Employee/Schedule';
 import PayrollEmployee from '@/pages/Employee/Payroll';
 import LeaveEmployee from '@/pages/Employee/Leave';
+import Profile from '@/pages/Employee/Profile';
 import PrivateRoute from '@/components/PrivateRoute';
 
 const router = createBrowserRouter([
@@ -55,7 +57,7 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: '',
-                        element: <ScheduleEmployee />
+                        element: <AttendanceEmployee />
                     },
                     {
                         path: 'attendance',
@@ -71,7 +73,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'profile',
-                        element: <AttendanceEmployee />
+                        element: <Profile />
                     },
                     {
                         path: 'schedule',
@@ -98,6 +100,7 @@ function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <RouterProvider router={router} />
+            <Toaster />
             {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </QueryClientProvider>
     );

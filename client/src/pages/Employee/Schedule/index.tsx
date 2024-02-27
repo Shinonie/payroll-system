@@ -47,7 +47,6 @@ const Schedule = () => {
         return null; // loading indicator
     }
 
-    console.log(scheduleData);
     const uniqueRanges = new Set<string>(); // Explicitly define Set to contain strings
     scheduleData.forEach((item: ScheduleItem) => uniqueRanges.add(item.range));
     const ranges: string[] = Array.from(uniqueRanges);

@@ -153,6 +153,7 @@ const createPayroll = async (req, res) => {
       montlySalaryRate: montlySalary,
       hourlyRate,
       overtimeHours: totalOvertimeHours,
+      overtimePay,
       totalHours: totalWorkHours,
       totalDeductions: totalWorkHours >= 120 ? totalDeductions._id : null,
       dateCreated,
