@@ -13,10 +13,10 @@ import { isAdmin } from "../middlewares/permission.js";
 
 router.post("/leave", createLeave);
 router.get("/leave/:id", getLeaveById);
-router.get("/leave", isAdmin, getAllLeaves);
+router.get("/leave", getAllLeaves);
 router.put("/leave/:id", updateLeaveDetails);
-router.put("/leave/approve/:id", isAdmin, approveLeave);
-router.put("/leave/reject/:id", isAdmin, rejectLeave);
-router.delete("/leave/:id", isAdmin, deleteLeave);
+router.put("/leave/approve/:id", approveLeave);
+router.put("/leave/reject/:id", rejectLeave);
+router.delete("/leave/:id", deleteLeave);
 
 export default router;
