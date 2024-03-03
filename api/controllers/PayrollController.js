@@ -332,4 +332,47 @@ const deletePayroll = async (req, res) => {
   }
 };
 
-export { createPayroll, getPayrollByEmployee, updatePayroll, deletePayroll };
+const getAllPayrolls = async (req, res) => {
+  try {
+    const payrolls = await Payroll.find().populate({
+      path: "employeeID",
+      select: "fullname",
+    });
+
+    res.status(200).json(payrolls);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const PayrollRelease = async (req, res) => {
+  const { employeeID } = req.params;
+  const { payrollID } = req.body;
+
+  try {
+    const payroll = await Payroll.findOneAndUpdate(
+      { employeeID, _id: payrollID },
+      { $set: { status: true } },
+      { new: true }
+    );
+
+    if (!payroll) {
+      return res.status(404).json({ message: "Payroll not found" });
+    }
+
+    res.status(200).json({ message: "Payroll released successfully", payroll });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export {
+  createPayroll,
+  getPayrollByEmployee,
+  updatePayroll,
+  deletePayroll,
+  getAllPayrolls,
+  PayrollRelease,
+};

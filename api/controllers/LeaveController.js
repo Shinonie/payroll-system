@@ -51,8 +51,10 @@ const getLeaveById = async (req, res) => {
 
 const getAllLeaves = async (req, res) => {
   try {
-    const allLeaves = await Leaves.find();
-
+    const allLeaves = await Leaves.find().populate({
+      path: "employeeID",
+      select: "fullname",
+    });
     res.status(200).json(allLeaves);
   } catch (error) {
     console.error(error);

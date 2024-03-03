@@ -10,6 +10,7 @@ const upload = multer({ dest: "../uploads" });
 
 const uploadAttendanceCSV = async (req, res) => {
   try {
+    console.log(req);
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
@@ -50,11 +51,32 @@ const getAllAttendanceEmployee = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const GetAllUnpaidAttendance = async (req, res) => {
+  try {
+    const { employeeID } = req.params;
+    const attendanceRecords = await Attendance.find({
+      employeeID,
+      payrollStatus: false,
+    });
+
+    if (attendanceRecords.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Attendance records not found for the employee" });
+    }
+
+    res.status(200).json(attendanceRecords);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 const updateAttendanceTime = async (req, res) => {
   try {
     const { employeeID, id } = req.params;
-    const { timeIn, timeOut, breakIn, breakOut } = req.body;
+    const { timeIn, timeOut, breakIn, breakOut, overtimeIn, overtimeOut } =
+      req.body;
 
     const attendance = await Attendance.findById(id);
 
@@ -73,6 +95,12 @@ const updateAttendanceTime = async (req, res) => {
     }
     if (breakOut) {
       attendance.time.breakOut = breakOut;
+    }
+    if (overtimeIn) {
+      attendance.time.overTimeIn = overtimeIn;
+    }
+    if (overtimeOut) {
+      attendance.time.overTimeIn = overtimeOut;
     }
     if (attendance.status == "ERROR") attendance.status = "ONTIME";
     if (attendance.breakStatus == "ERROR") attendance.status = "ONTIME";
@@ -109,4 +137,5 @@ export {
   upload,
   getAllAttendanceEmployee,
   updateAttendanceTime,
+  GetAllUnpaidAttendance,
 };

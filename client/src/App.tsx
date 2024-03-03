@@ -10,7 +10,8 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 
 import Admin from '@/pages/Admin';
-import HumanResource from '@/pages/HumanResource';
+
+// EMPLOYEE
 import AttendanceEmployee from '@/pages/Employee/Attendance';
 import ScheduleEmployee from '@/pages/Employee/Schedule';
 import PayrollEmployee from '@/pages/Employee/Payroll';
@@ -18,6 +19,12 @@ import LeaveEmployee from '@/pages/Employee/Leave';
 import Profile from '@/pages/Employee/Profile';
 import PrivateRoute from '@/components/PrivateRoute';
 
+// HR
+import EmployeeHR from '@/pages/HumanResource/Employee';
+import AttendancesHR from '@/pages/HumanResource/components/Attendances';
+import PayrollHR from '@/pages/HumanResource/Payrolls';
+import AdjustmentHR from '@/pages/HumanResource/Adjustments';
+import LeavesHR from '@/pages/HumanResource/Leaves';
 const router = createBrowserRouter([
     {
         path: '/',
@@ -89,7 +96,45 @@ const router = createBrowserRouter([
         children: [
             {
                 path: '',
-                element: <HumanResource />
+                element: <PrivateRoute allowedRoles={['HR']} />,
+                children: [
+                    {
+                        path: '',
+                        element: <EmployeeHR />
+                    },
+                    {
+                        path: 'employees',
+                        element: <EmployeeHR />
+                    },
+                    {
+                        path: 'attendance/:id',
+                        element: <AttendancesHR />
+                    },
+                    {
+                        path: 'payroll/:id',
+                        element: <PayrollEmployee />
+                    },
+                    {
+                        path: 'schedule/:id',
+                        element: <ScheduleEmployee />
+                    },
+                    {
+                        path: 'payrolls',
+                        element: <PayrollHR />
+                    },
+                    {
+                        path: 'leaves',
+                        element: <LeavesHR />
+                    },
+                    {
+                        path: 'adjustments',
+                        element: <AdjustmentHR />
+                    },
+                    {
+                        path: 'profile',
+                        element: <Profile />
+                    }
+                ]
             }
         ]
     }
