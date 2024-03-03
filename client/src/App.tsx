@@ -21,10 +21,11 @@ import PrivateRoute from '@/components/PrivateRoute';
 
 // HR
 import EmployeeHR from '@/pages/HumanResource/Employee';
-import AttendancesHR from '@/pages/HumanResource/components/Attendances';
+import AttendancesHR from './pages/HumanResource/components/Attendance';
 import PayrollHR from '@/pages/HumanResource/Payrolls';
 import AdjustmentHR from '@/pages/HumanResource/Adjustments';
 import LeavesHR from '@/pages/HumanResource/Leaves';
+
 const router = createBrowserRouter([
     {
         path: '/',
