@@ -1,6 +1,19 @@
-import { z } from 'zod';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+
+import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+
+import { Button } from '@/components/ui/button';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 
@@ -17,75 +30,23 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { CreatePayroll } from '@/api/services/hr/Payroll';
+import { EditSchedule } from '@/api/services/hr/Schedules';
 import { useState } from 'react';
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-
-import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
-
-import { Button } from '@/components/ui/button';
-
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
-import { Link } from 'react-router-dom';
-
 const FormSchema = z.object({
-    SSSLoan: z.string().optional(),
-    PagibigLoan: z.string().optional(),
-    hourlyRate: z.string().optional(),
-    incentives: z.string().optional(),
-    allowance: z.string().optional()
+    timeIn: z.string().optional(),
+    timeOut: z.string().optional(),
+    breakIn: z.string().optional(),
+    breakOut: z.string().optional()
 });
-
 export const columns = [
     {
-        accessorKey: '_id',
-        header: 'ID',
-        cell: ({ row }: any) => <div className="capitalize">{row.getValue('_id')}</div>
-    },
-    {
-        accessorKey: 'email',
-        header: ({ column }: any) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-                    Email
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            );
-        },
-        cell: ({ row }: any) => <div className="lowercase">{row.getValue('email')}</div>
-    },
-    {
-        accessorKey: 'fullname',
-        header: 'Full Name',
-        cell: ({ row }: any) => (
-            <div className="flex items-center gap-2">
-                <Avatar>
-                    <AvatarImage src="https://github.com/shadcn" alt="@shadcn" />
-                    <AvatarFallback>
-                        {row.original?.fullname?.charAt(0).toLocaleUpperCase()}
-                    </AvatarFallback>
-                </Avatar>
-                <div className="capitalize">{row.getValue('fullname')}</div>
-            </div>
-        )
-    },
-    {
-        accessorKey: 'birthday',
-        header: 'Birthday',
+        accessorKey: 'date',
+        header: 'Date',
+
         cell: ({ row }: any) => (
             <div className="capitalize">
-                {new Date(row.getValue('birthday')).toLocaleDateString('en-US', {
+                {new Date(row.getValue('date')).toLocaleDateString('en-US', {
                     month: 'long',
                     day: 'numeric',
                     year: 'numeric'
@@ -94,9 +55,48 @@ export const columns = [
         )
     },
     {
-        accessorKey: 'gender',
-        header: 'Gender',
-        cell: ({ row }: any) => <div className="capitalize">{row.getValue('gender')}</div>
+        accessorKey: 'timeIn',
+        header: 'Time In',
+        cell: ({ row }: any) => (
+            <div className={`capitalize ${row.getValue('timeIn') === null && 'text-red-700'}`}>
+                {row.getValue('timeIn')
+                    ? row.getValue('timeIn').substring(11, 19)
+                    : 'NOT AVAILABLE'}
+            </div>
+        )
+    },
+    {
+        accessorKey: 'breakIn',
+        header: 'Break In',
+        cell: ({ row }: any) => (
+            <div className={`capitalize ${row.getValue('breakOut') === null && 'text-red-700'}`}>
+                {row.getValue('breakIn')
+                    ? row.getValue('breakIn').substring(11, 19)
+                    : 'NOT AVAILABLE'}
+            </div>
+        )
+    },
+    {
+        accessorKey: 'breakOut',
+        header: 'Break Out',
+        cell: ({ row }: any) => (
+            <div className={`capitalize ${row.getValue('breakOut') === null && 'text-red-700'}`}>
+                {row.getValue('breakOut')
+                    ? row.getValue('breakOut').substring(11, 19)
+                    : 'NOT AVAILABLE'}
+            </div>
+        )
+    },
+    {
+        accessorKey: 'timeOut',
+        header: 'Time Out',
+        cell: ({ row }: any) => (
+            <div className={`capitalize ${row.getValue('timeOut') === null && 'text-red-700'}`}>
+                {row.getValue('timeOut')
+                    ? row.getValue('timeOut').substring(11, 19)
+                    : 'NOT AVAILABLE'}
+            </div>
+        )
     },
     {
         id: 'actions',
@@ -109,22 +109,13 @@ export const columns = [
             const [open, setOpen] = useState(false);
 
             const { mutate } = useMutation({
-                mutationFn: CreatePayroll,
+                mutationFn: EditSchedule,
                 onSuccess: () => {
                     setOpen(false);
-                    queryClient.invalidateQueries({ queryKey: ['payrolls'] });
+                    queryClient.invalidateQueries({ queryKey: ['schedules'] });
                     toast({
-                        title: 'Payroll',
-                        description: 'Payroll successfully created'
-                    });
-                },
-                onError: () => {
-                    setOpen(false);
-                    toast({
-                        variant: 'destructive',
-                        title: 'Payroll',
-                        description:
-                            'Payroll is not available, due to existing payroll or no present attendance.'
+                        title: 'Update Attendance',
+                        description: 'Attendance successfully update'
                     });
                 }
             });
@@ -141,33 +132,44 @@ export const columns = [
                 e.stopPropagation(); // Stop the click event from reaching the dropdown
             };
 
+            const initialTimeIn = data.timeIn?.slice(11, 16);
+            const initialTimeOut = data.timeOut?.slice(11, 16);
+            const initialBreakIn = data.breakIn?.slice(11, 16);
+            const initialBreakOut = data.breakOut?.slice(11, 16);
+
             const form = useForm<z.infer<typeof FormSchema>>({
                 resolver: zodResolver(FormSchema),
                 defaultValues: {
-                    SSSLoan: '',
-                    PagibigLoan: '',
-                    hourlyRate: '',
-                    incentives: '',
-                    allowance: ''
+                    timeIn: initialTimeIn || '',
+                    timeOut: initialTimeOut || '',
+                    breakIn: initialBreakIn || '',
+                    breakOut: initialBreakOut || ''
                 }
             });
 
             function onSubmit(formData: z.infer<typeof FormSchema>) {
-                const { SSSLoan, PagibigLoan, hourlyRate, incentives, allowance } = formData;
+                const date = data.date.slice(0, 11);
 
-                mutate({
-                    employeeID: data._id,
-                    SSSLoan,
-                    PagibigLoan,
-                    hourlyRate,
-                    incentives,
-                    allowance
-                });
+                const updatedTimeIn = formData.timeIn ? date + formData.timeIn + ':00Z' : '';
+                const updatedTimeOut = formData.timeOut ? date + formData.timeOut + ':00Z' : '';
+                const updatedBreakIn = formData.breakIn ? date + formData.breakIn + ':00Z' : '';
+                const updatedBreakOut = formData.breakOut ? date + formData.breakOut + ':00Z' : '';
+
+                const formattedData: Record<string, string> = {
+                    timeIn: updatedTimeIn,
+                    timeOut: updatedTimeOut,
+                    breakIn: updatedBreakIn,
+                    breakOut: updatedBreakOut
+                };
+
+                mutate({ id: data._id, time: formattedData });
                 toast({
                     title: 'You submitted the following values:',
                     description: (
                         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                            <code className="text-white">{JSON.stringify(formData, null, 2)}</code>
+                            <code className="text-white">
+                                {JSON.stringify(formattedData, null, 2)}
+                            </code>
                         </pre>
                     )
                 });
@@ -185,18 +187,10 @@ export const columns = [
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                            <Link to={`/human-resource/attendance/${data._id}`}>
-                                View Attendance
-                            </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <Link to={`/human-resource/schedule/${data._id}`}>View Schedules</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
                             <Dialog open={open} onOpenChange={setOpen}>
                                 <DialogTrigger asChild>
                                     <Button variant="outline" onClick={handleDialogButtonClick}>
-                                        Create Payroll
+                                        Edit Attendance
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent
@@ -207,10 +201,10 @@ export const columns = [
                                     onKeyDown={handleDialogContentKeyDown}
                                     onClick={handleDialogContentClick}>
                                     <DialogHeader>
-                                        <DialogTitle>Create Payroll</DialogTitle>
+                                        <DialogTitle>Edit Attendance</DialogTitle>
                                         <DialogDescription className="text-primary">
-                                            Make payroll to employee here. Click save when you're
-                                            done.
+                                            Make changes to employee attendance here. Click save
+                                            when you're done.
                                         </DialogDescription>
                                     </DialogHeader>
                                     <Form {...form}>
@@ -220,14 +214,14 @@ export const columns = [
                                             <div className="col-span-1">
                                                 <FormField
                                                     control={form.control}
-                                                    name="SSSLoan"
+                                                    name="timeIn"
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel>SSS LOAN</FormLabel>
+                                                            <FormLabel>TIME IN</FormLabel>
                                                             <FormControl>
                                                                 <Input
-                                                                    type="number"
-                                                                    placeholder="Enter here..."
+                                                                    type="time"
+                                                                    placeholder="shadcn"
                                                                     {...field}
                                                                 />
                                                             </FormControl>
@@ -238,14 +232,14 @@ export const columns = [
                                             <div className="col-span-1">
                                                 <FormField
                                                     control={form.control}
-                                                    name="PagibigLoan"
+                                                    name="breakIn"
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel>Pagibig Loan</FormLabel>
+                                                            <FormLabel>BREAK IN</FormLabel>
                                                             <FormControl>
                                                                 <Input
-                                                                    type="number"
-                                                                    placeholder="Enter here..."
+                                                                    type="time"
+                                                                    placeholder="shadcn"
                                                                     {...field}
                                                                 />
                                                             </FormControl>
@@ -256,14 +250,14 @@ export const columns = [
                                             <div className="col-span-1">
                                                 <FormField
                                                     control={form.control}
-                                                    name="hourlyRate"
+                                                    name="breakOut"
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel>Rate per Hour</FormLabel>
+                                                            <FormLabel>BREAK OUT</FormLabel>
                                                             <FormControl>
                                                                 <Input
-                                                                    type="number"
-                                                                    placeholder="Enter here..."
+                                                                    type="time"
+                                                                    placeholder="shadcn"
                                                                     {...field}
                                                                 />
                                                             </FormControl>
@@ -274,32 +268,14 @@ export const columns = [
                                             <div className="col-span-1">
                                                 <FormField
                                                     control={form.control}
-                                                    name="incentives"
+                                                    name="timeOut"
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <FormLabel>Incentives</FormLabel>
+                                                            <FormLabel>TIME OUT</FormLabel>
                                                             <FormControl>
                                                                 <Input
-                                                                    type="number"
-                                                                    placeholder="Enter here..."
-                                                                    {...field}
-                                                                />
-                                                            </FormControl>
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                            <div className="col-span-1">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="allowance"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>ALLOWANCE</FormLabel>
-                                                            <FormControl>
-                                                                <Input
-                                                                    type="number"
-                                                                    placeholder="Enter here..."
+                                                                    type="time"
+                                                                    placeholder="shadcn"
                                                                     {...field}
                                                                 />
                                                             </FormControl>
@@ -312,7 +288,7 @@ export const columns = [
                                                 <Button
                                                     className="text-white hover:bg-accent"
                                                     type="submit">
-                                                    Create Payroll
+                                                    Save changes
                                                 </Button>
                                             </DialogFooter>
                                         </form>

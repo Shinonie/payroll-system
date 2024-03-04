@@ -14,6 +14,7 @@ import { UploadAttendance as CreateAttendance } from '@/api/services/hr/Attendan
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Label } from '@radix-ui/react-label';
+import { FileUp } from 'lucide-react';
 
 export function UploadAttendance() {
     const [file, setFile] = useState(null);
@@ -56,7 +57,10 @@ export function UploadAttendance() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">Upload Attendance</Button>
+                <Button variant="outline" className="bg-primary text-white gap-2">
+                    <FileUp />
+                    Upload Attendance
+                </Button>
             </DialogTrigger>
             <DialogContent className="max-sm::max-w-[425px] w-full bg-primary-foreground">
                 <DialogHeader>

@@ -21,10 +21,11 @@ import PrivateRoute from '@/components/PrivateRoute';
 
 // HR
 import EmployeeHR from '@/pages/HumanResource/Employee';
-import AttendancesHR from './pages/HumanResource/components/Attendance';
+import AttendancesHR from '@/pages/HumanResource/components/Attendance';
 import PayrollHR from '@/pages/HumanResource/Payrolls';
 import AdjustmentHR from '@/pages/HumanResource/Adjustments';
 import LeavesHR from '@/pages/HumanResource/Leaves';
+import ScheduleHR from '@/pages/HumanResource/components/Schedules';
 
 const router = createBrowserRouter([
     {
@@ -117,7 +118,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'schedule/:id',
-                        element: <ScheduleEmployee />
+                        element: <ScheduleHR />
                     },
                     {
                         path: 'payrolls',
