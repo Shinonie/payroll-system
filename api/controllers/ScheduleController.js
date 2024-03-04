@@ -3,6 +3,8 @@ import Schedule from "../models/ScheduleModel.js";
 const createSchedule = async (req, res) => {
   const scheduleArray = req.body;
 
+  console.log(scheduleArray);
+
   try {
     const schedules = scheduleArray.map((schedule) => ({
       employeeID: schedule.employeeID,
@@ -59,7 +61,7 @@ const getScheduleById = async (req, res) => {
 
 const updateSchedule = async (req, res) => {
   const scheduleId = req.params.id;
-  const { date, timeIn, timeOut, breakIn, breakOut } = req.body;
+  const { date, timeIn, timeOut, breakIn, breakOut } = req.body.time;
 
   try {
     const schedule = await Schedule.findByIdAndUpdate(

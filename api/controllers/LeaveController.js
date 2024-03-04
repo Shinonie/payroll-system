@@ -92,7 +92,7 @@ const approveLeave = async (req, res) => {
   try {
     const leave = await Leaves.findByIdAndUpdate(
       leaveId,
-      { status: true },
+      { status: "APPROVE" },
       { new: true }
     );
 
@@ -115,7 +115,7 @@ const rejectLeave = async (req, res) => {
   try {
     const leave = await Leaves.findByIdAndUpdate(
       leaveId,
-      { status: false },
+      { status: "REJECTED" },
       { new: true }
     );
 

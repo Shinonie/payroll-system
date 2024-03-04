@@ -9,3 +9,22 @@ export const GetAllLeave = async () => {
         throw error;
     }
 };
+export const ApproveLeave = async (data: any) => {
+    try {
+        const response = await axiosInstance.put(`/leave/leave/approve/${data}`);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};
+
+export const RejectLeave = async (data: any) => {
+    try {
+        const response = await axiosInstance.put(`/leave/leave/reject/${data}`);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};

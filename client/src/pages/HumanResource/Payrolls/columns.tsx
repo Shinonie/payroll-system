@@ -44,16 +44,17 @@ export const columns = [
     },
     {
         accessorKey: 'fullname',
+        accessorFn: (row: any) => row?.employeeID?.fullname,
         header: 'Full Name',
         cell: ({ row }: any) => (
             <div className="flex items-center gap-2">
                 <Avatar>
                     <AvatarImage src="https://github.com/shadcn" alt="@shadcn" />
                     <AvatarFallback>
-                        {row.original?.employeeID?.fullname.charAt(0).toUpperCase()}
+                        {row.getValue('fullname')?.charAt(0).toLocaleUpperCase()}
                     </AvatarFallback>
                 </Avatar>
-                <div className="capitalize">{row.original?.employeeID?.fullname}</div>
+                <div className="capitalize">{row.getValue('fullname')}</div>
             </div>
         )
     },
@@ -94,7 +95,6 @@ export const columns = [
 
             const queryClient = useQueryClient();
 
-            console.log(data._id);
             const { mutate } = useMutation({
                 mutationFn: UpdatePayrollStatus,
                 onSuccess: () => {

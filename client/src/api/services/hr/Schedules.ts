@@ -1,9 +1,18 @@
 import { axiosPrivate, axiosInstance } from '@/api';
 
-export const UpdatePayrollStatus = async (data: any) => {
-    const { employeeID, payrollID } = data;
+export const GetScheduleByEmployee = async (data: any) => {
     try {
-        const response = await axiosInstance.put(`/payroll/payroll/${employeeID}`, { payrollID });
+        const response = await axiosInstance.get(`/schedule/schedule/${data}`);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};
+export const EditSchedule = async (data: any) => {
+    const { id, time } = data;
+    try {
+        const response = await axiosInstance.put(`/schedule/schedule/${id}`, { time });
         return response.data;
     } catch (error) {
         console.error('Request error:', error);
@@ -11,19 +20,9 @@ export const UpdatePayrollStatus = async (data: any) => {
     }
 };
 
-export const GetAllPayroll = async () => {
+export const CreateSchedule = async (data: any) => {
     try {
-        const response = await axiosInstance.get(`/payroll/payroll`);
-        return response.data;
-    } catch (error) {
-        console.error('Request error:', error);
-        throw error;
-    }
-};
-
-export const CreatePayroll = async (data: any) => {
-    try {
-        const response = await axiosInstance.post(`/payroll/payroll`, data);
+        const response = await axiosInstance.post(`/schedule/schedule`, data);
         return response.data;
     } catch (error) {
         console.error('Request error:', error);

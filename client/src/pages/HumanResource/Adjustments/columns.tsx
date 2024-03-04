@@ -40,11 +40,6 @@ export const columns = [
         cell: ({ row }: any) => <div className="capitalize">{row.original.adjustment.type}</div>
     },
     {
-        accessorKey: 'adjustmentType',
-        header: 'TYPE',
-        cell: ({ row }: any) => <div className="capitalize">{row.original.adjustment.type}</div>
-    },
-    {
         accessorKey: 'status',
         header: 'Status',
         cell: ({ row }: any) => (

@@ -13,9 +13,16 @@ const LeavesHR = () => {
         return <div>Loading...</div>;
     }
 
+    const pendingData = data.filter((item: any) => item.status === 'PENDING');
+
+    const nonPendingData = data.filter((item: any) => item.status !== 'PENDING');
+
+    const sortedData = pendingData.concat(nonPendingData);
+
     return (
         <div>
-            <DataTable data={data} columns={columns} filter="fullname" />
+            <h1 className="text-2xl font-semibold">EMPLOYEE LEAVES</h1>
+            <DataTable data={sortedData} columns={columns} filter="fullname" />
         </div>
     );
 };

@@ -1,4 +1,3 @@
-import { Checkbox } from '@/components/ui/checkbox';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,7 +13,10 @@ import { Button } from '@/components/ui/button';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-import { Link } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from '@/components/ui/use-toast';
+
+import { RejectLeave, ApproveLeave } from '@/api/services/hr/Leaves';
 
 export const columns = [
     {
@@ -24,16 +26,17 @@ export const columns = [
     },
     {
         accessorKey: 'fullname',
+        accessorFn: (row: any) => row.employeeID.fullname,
         header: 'Full Name',
         cell: ({ row }: any) => (
             <div className="flex items-center gap-2">
                 <Avatar>
                     <AvatarImage src="https://github.com/shadcn" alt="@shadcn" />
                     <AvatarFallback>
-                        {row.original?.employeeID?.fullname?.charAt(0).toLocaleUpperCase()}
+                        {row.getValue('fullname').charAt(0).toLocaleUpperCase()}
                     </AvatarFallback>
                 </Avatar>
-                <div className="capitalize">{row.original?.employeeID?.fullname}</div>
+                <div className="capitalize">{row.getValue('fullname')}</div>
             </div>
         )
     },
@@ -70,7 +73,16 @@ export const columns = [
     },
     {
         accessorKey: 'status',
-        header: 'Status',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Status
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => (
             <div
                 className={`capitalize rounded-xl text-center ${
@@ -90,6 +102,29 @@ export const columns = [
         cell: ({ row }: any) => {
             const data = row.original;
 
+            const queryClient = useQueryClient();
+
+            const { mutate: approveLeave } = useMutation({
+                mutationFn: ApproveLeave,
+                onSuccess: () => {
+                    queryClient.invalidateQueries({ queryKey: ['leaves'] });
+                    toast({
+                        title: 'Leave',
+                        description: 'Leave successfully approve'
+                    });
+                }
+            });
+            const { mutate: rejectLeave } = useMutation({
+                mutationFn: RejectLeave,
+                onSuccess: () => {
+                    queryClient.invalidateQueries({ queryKey: ['leaves'] });
+                    toast({
+                        title: 'Leave',
+                        description: 'Leave successfully rejected'
+                    });
+                }
+            });
+
             if (data.status === 'APPROVE' || data.status === 'REJECTED') {
                 return null;
             }
@@ -104,8 +139,22 @@ export const columns = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>APPROVE</DropdownMenuItem>
-                        <DropdownMenuItem>REJECT</DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Button
+                                variant="outline"
+                                className="w-full hover:bg-green-200 hover:text-green-700"
+                                onClick={() => approveLeave(data._id)}>
+                                APPROVE
+                            </Button>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Button
+                                variant="outline"
+                                className="w-full hover:bg-red-200 hover:text-red-700"
+                                onClick={() => rejectLeave(data._id)}>
+                                REJECT
+                            </Button>
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             );

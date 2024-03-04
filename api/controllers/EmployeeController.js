@@ -19,7 +19,6 @@ const GetEmployee = async (req, res) => {
   const { employeeID } = req.params;
   try {
     const Employees = await Employee.findOne({
-      userType: "EMPLOYEE",
       archive: false,
       controlNumber: employeeID,
     }).select("-password");
