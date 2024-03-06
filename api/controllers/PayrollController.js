@@ -339,7 +339,28 @@ const getAllPayrolls = async (req, res) => {
       select: "fullname",
     });
 
-    res.status(200).json(payrolls);
+    const payrollDetails = await Promise.all(
+      payrolls.map(async (payroll) => {
+        const adjustment = await Adjustment.findOne({
+          payrollID: payroll._id,
+        });
+        const deduction = await Deduction.findOne({
+          payrollID: payroll._id,
+        });
+
+        return {
+          payroll,
+          adjustment,
+          deduction,
+        };
+      })
+    );
+
+    if (!payrolls) {
+      return res.status(404).json({ message: "Payroll not found" });
+    }
+
+    res.status(200).json(payrollDetails);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
