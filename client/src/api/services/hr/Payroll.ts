@@ -21,6 +21,16 @@ export const GetAllPayroll = async () => {
     }
 };
 
+export const GetAllPayrollByEmployee = async (data: any) => {
+    try {
+        const response = await axiosInstance.get(`/payroll/payroll/${data}`);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};
+
 export const CreatePayroll = async (data: any) => {
     try {
         const response = await axiosInstance.post(`/payroll/payroll`, data);

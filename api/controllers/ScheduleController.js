@@ -3,8 +3,6 @@ import Schedule from "../models/ScheduleModel.js";
 const createSchedule = async (req, res) => {
   const scheduleArray = req.body;
 
-  console.log(scheduleArray);
-
   try {
     const schedules = scheduleArray.map((schedule) => ({
       employeeID: schedule.employeeID,
