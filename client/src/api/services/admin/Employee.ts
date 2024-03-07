@@ -55,3 +55,13 @@ export const DeleteArchiveEmployees = async (data: any) => {
         throw error;
     }
 };
+
+export const CreateEmployeeAccount = async (data: any) => {
+    try {
+        const response = await axiosInstance.post(`/auth/register`, data);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};

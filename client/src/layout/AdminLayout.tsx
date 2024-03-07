@@ -1,12 +1,20 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
-import { Wallet, CalendarClock, SlidersHorizontal, Users, PackageOpen } from 'lucide-react';
+import {
+    Wallet,
+    CalendarClock,
+    SlidersHorizontal,
+    Users,
+    PackageOpen,
+    UserPlus
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/store/useUserStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { logout } from '@/api/services/AuthServices';
 
 const navLinks = [
+    { to: 'create-employee', icon: <UserPlus />, label: 'CREATE ACCOUNT' },
     { to: 'employees', icon: <Users />, label: 'EMPLOYEES' },
     { to: 'payrolls', icon: <Wallet />, label: 'PAYROLLS' },
     { to: 'adjustments', icon: <SlidersHorizontal />, label: 'ADJUSTMENTS' },

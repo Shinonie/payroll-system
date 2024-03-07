@@ -157,7 +157,6 @@ export const columns = [
                 }
             });
 
-            console.log(data);
             const handleDialogButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
                 e.stopPropagation(); // Stop the click event from reaching the dropdown
             };

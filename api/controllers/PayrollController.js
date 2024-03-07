@@ -27,8 +27,6 @@ const createPayroll = async (req, res) => {
       payrollStatus: false,
     });
 
-    console.log(employeeAttendance);
-
     if (employeeAttendance.length == 0) {
       return res.status(404).json({ message: "No Active Payroll" });
     }

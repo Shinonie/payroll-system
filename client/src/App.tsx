@@ -9,8 +9,6 @@ import HumanResourceLayout from '@/layout/HumanResourceLayout';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 
-import Admin from '@/pages/Admin';
-
 // EMPLOYEE
 import AttendanceEmployee from '@/pages/Employee/Attendance';
 import ScheduleEmployee from '@/pages/Employee/Schedule';
@@ -35,6 +33,7 @@ import AdjustmentAdmin from '@/pages/Admin/Adjustments';
 import LeavesAdmin from '@/pages/Admin/Leaves';
 import ScheduleAdmin from '@/pages/Admin/components/Schedules';
 import Archive from '@/pages/Admin/Archive';
+import CreateEmployee from '@/pages/Admin/AccountCreation';
 
 const router = createBrowserRouter([
     {
@@ -52,16 +51,6 @@ const router = createBrowserRouter([
             {
                 path: '/register',
                 element: <Register />
-            }
-        ]
-    },
-    {
-        path: '/admin',
-        element: <AdminLayout />,
-        children: [
-            {
-                path: '',
-                element: <Admin />
             }
         ]
     },
@@ -196,6 +185,10 @@ const router = createBrowserRouter([
                     {
                         path: 'archive',
                         element: <Archive />
+                    },
+                    {
+                        path: 'create-employee',
+                        element: <CreateEmployee />
                     }
                 ]
             }
