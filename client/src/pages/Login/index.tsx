@@ -69,6 +69,9 @@ const Login = () => {
             if (data.user.userType === 'HR') {
                 navigate('/human-resource');
             }
+            if (data.user.userType === 'ADMIN') {
+                navigate('/admin');
+            }
         } catch (error) {
             toast({
                 variant: 'destructive',

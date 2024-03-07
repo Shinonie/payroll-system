@@ -218,6 +218,10 @@ export const columns = [
                 });
             }
 
+            if (data.payrollStatus) {
+                return null;
+            }
+
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

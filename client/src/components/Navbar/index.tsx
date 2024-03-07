@@ -17,7 +17,7 @@ const Navbar = ({ fullname, email, navLinks, onLogout }: any) => {
                     }>
                     <Avatar>
                         <AvatarImage src="https://github.com/shadcn" alt="@shadcn" />
-                        <AvatarFallback>{fullname.charAt(0).toLocaleUpperCase()}</AvatarFallback>
+                        <AvatarFallback>{fullname?.charAt(0).toLocaleUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="md:flex flex-col">
                         <h1 className="text-lg capitalize">{fullname}</h1>

@@ -27,6 +27,8 @@ const createPayroll = async (req, res) => {
       payrollStatus: false,
     });
 
+    console.log(employeeAttendance);
+
     if (employeeAttendance.length == 0) {
       return res.status(404).json({ message: "No Active Payroll" });
     }
@@ -146,6 +148,9 @@ const createPayroll = async (req, res) => {
     }
 
     const dateCreated = new Date().toISOString();
+    const dateRange = `${employeeAttendance[0].date} ${
+      employeeAttendance[employeeAttendance.length - 1].date
+    }`;
 
     const newPayroll = new Payroll({
       employeeID,
@@ -156,6 +161,7 @@ const createPayroll = async (req, res) => {
       overtimePay,
       totalHours: totalWorkHours,
       totalDeductions: totalWorkHours >= 120 ? totalDeductions._id : null,
+      dateRange,
       dateCreated,
       ...(employeeAdjustment.length > 0 && { employeeAdjustment }),
       incentives,

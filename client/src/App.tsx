@@ -27,6 +27,15 @@ import AdjustmentHR from '@/pages/HumanResource/Adjustments';
 import LeavesHR from '@/pages/HumanResource/Leaves';
 import ScheduleHR from '@/pages/HumanResource/components/Schedules';
 
+// ADMIN
+import EmployeeAdmin from '@/pages/Admin/Employee';
+import AttendancesAdmin from '@/pages/Admin/components/Attendance';
+import PayrollAdmin from '@/pages/Admin/Payrolls';
+import AdjustmentAdmin from '@/pages/Admin/Adjustments';
+import LeavesAdmin from '@/pages/Admin/Leaves';
+import ScheduleAdmin from '@/pages/Admin/components/Schedules';
+import Archive from '@/pages/Admin/Archive';
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -126,6 +135,54 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'leaves',
+                        element: <LeavesAdmin />
+                    },
+                    {
+                        path: 'adjustments',
+                        element: <AdjustmentAdmin />
+                    },
+                    {
+                        path: 'profile',
+                        element: <Profile />
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        path: '/admin',
+        element: <AdminLayout />,
+        children: [
+            {
+                path: '',
+                element: <PrivateRoute allowedRoles={['ADMIN']} />,
+                children: [
+                    {
+                        path: '',
+                        element: <EmployeeAdmin />
+                    },
+                    {
+                        path: 'employees',
+                        element: <EmployeeAdmin />
+                    },
+                    {
+                        path: 'attendance/:id',
+                        element: <AttendancesAdmin />
+                    },
+                    {
+                        path: 'payroll/:id',
+                        element: <PayrollEmployee />
+                    },
+                    {
+                        path: 'schedule/:id',
+                        element: <ScheduleAdmin />
+                    },
+                    {
+                        path: 'payrolls',
+                        element: <PayrollAdmin />
+                    },
+                    {
+                        path: 'leaves',
                         element: <LeavesHR />
                     },
                     {
@@ -135,6 +192,10 @@ const router = createBrowserRouter([
                     {
                         path: 'profile',
                         element: <Profile />
+                    },
+                    {
+                        path: 'archive',
+                        element: <Archive />
                     }
                 ]
             }

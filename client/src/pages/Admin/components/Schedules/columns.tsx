@@ -30,7 +30,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { EditSchedule } from '@/api/services/hr/Schedules';
+import { EditSchedule } from '@/api/services/admin/Schedules';
 import { useState } from 'react';
 
 const FormSchema = z.object({

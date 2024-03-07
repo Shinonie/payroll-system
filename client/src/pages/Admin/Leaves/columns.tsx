@@ -16,7 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/components/ui/use-toast';
 
-import { RejectLeave, ApproveLeave } from '@/api/services/hr/Leaves';
+import { RejectLeave, ApproveLeave } from '@/api/services/admin/Leaves';
 
 export const columns = [
     {

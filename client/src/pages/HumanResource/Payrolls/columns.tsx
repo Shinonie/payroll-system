@@ -200,7 +200,7 @@ export const columns = [
                 }
             });
 
-            if (data.status) {
+            if (data?.payroll?.status) {
                 return null;
             }
 

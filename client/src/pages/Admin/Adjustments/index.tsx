@@ -1,9 +1,9 @@
 import { DataTable } from '@/components/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { columns } from './columns';
-import { GetAllAdjustment } from '@/api/services/hr/Adjustment';
+import { GetAllAdjustment } from '@/api/services/admin/Adjustment';
 
-const AdjustmentHR = () => {
+const AdjustmentAdmin = () => {
     const { isLoading, data } = useQuery({
         queryFn: GetAllAdjustment,
         queryKey: ['adjustment']
@@ -22,4 +22,4 @@ const AdjustmentHR = () => {
     );
 };
 
-export default AdjustmentHR;
+export default AdjustmentAdmin;
