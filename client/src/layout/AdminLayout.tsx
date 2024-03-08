@@ -6,7 +6,8 @@ import {
     SlidersHorizontal,
     Users,
     PackageOpen,
-    UserPlus
+    UserPlus,
+    FilePenLine
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/store/useUserStore';
@@ -19,6 +20,7 @@ const navLinks = [
     { to: 'payrolls', icon: <Wallet />, label: 'PAYROLLS' },
     { to: 'adjustments', icon: <SlidersHorizontal />, label: 'ADJUSTMENTS' },
     { to: 'leaves', icon: <CalendarClock />, label: 'EMPLOYEE LEAVES' },
+    { to: 'taxes', icon: <FilePenLine />, label: 'EDIT TAXES' },
     { to: 'archive', icon: <PackageOpen />, label: 'ARCHIVE ACCOUNT' }
 ];
 

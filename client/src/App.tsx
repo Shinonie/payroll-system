@@ -34,6 +34,7 @@ import LeavesAdmin from '@/pages/Admin/Leaves';
 import ScheduleAdmin from '@/pages/Admin/components/Schedules';
 import Archive from '@/pages/Admin/Archive';
 import CreateEmployee from '@/pages/Admin/AccountCreation';
+import Taxes from '@/pages/Admin/Taxes';
 
 const router = createBrowserRouter([
     {
@@ -189,6 +190,10 @@ const router = createBrowserRouter([
                     {
                         path: 'create-employee',
                         element: <CreateEmployee />
+                    },
+                    {
+                        path: 'taxes',
+                        element: <Taxes />
                     }
                 ]
             }
@@ -197,6 +202,7 @@ const router = createBrowserRouter([
 ]);
 
 const queryClient = new QueryClient();
+
 function App() {
     return (
         <QueryClientProvider client={queryClient}>
