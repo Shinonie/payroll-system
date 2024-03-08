@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
-import { Wallet, CalendarClock, SlidersHorizontal, Users } from 'lucide-react';
+import { Wallet, CalendarClock, SlidersHorizontal, Users, FilePenLine } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '@/store/useUserStore';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -10,6 +10,7 @@ const navLinks = [
     { to: 'employees', icon: <Users />, label: 'EMPLOYEES' },
     { to: 'payrolls', icon: <Wallet />, label: 'PAYROLLS' },
     { to: 'adjustments', icon: <SlidersHorizontal />, label: 'ADJUSTMENTS' },
+    { to: 'taxes', icon: <FilePenLine />, label: 'EDIT TAXES' },
     { to: 'leaves', icon: <CalendarClock />, label: 'EMPLOYEE LEAVES' }
 ];
 

@@ -24,6 +24,7 @@ import PayrollHR from '@/pages/HumanResource/Payrolls';
 import AdjustmentHR from '@/pages/HumanResource/Adjustments';
 import LeavesHR from '@/pages/HumanResource/Leaves';
 import ScheduleHR from '@/pages/HumanResource/components/Schedules';
+import TaxesHR from '@/pages/HumanResource/Taxes';
 
 // ADMIN
 import EmployeeAdmin from '@/pages/Admin/Employee';
@@ -34,7 +35,7 @@ import LeavesAdmin from '@/pages/Admin/Leaves';
 import ScheduleAdmin from '@/pages/Admin/components/Schedules';
 import Archive from '@/pages/Admin/Archive';
 import CreateEmployee from '@/pages/Admin/AccountCreation';
-import Taxes from '@/pages/Admin/Taxes';
+import TaxesAdmin from '@/pages/Admin/Taxes';
 
 const router = createBrowserRouter([
     {
@@ -134,6 +135,10 @@ const router = createBrowserRouter([
                     {
                         path: 'profile',
                         element: <Profile />
+                    },
+                    {
+                        path: 'taxes',
+                        element: <TaxesHR />
                     }
                 ]
             }
@@ -193,7 +198,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'taxes',
-                        element: <Taxes />
+                        element: <TaxesAdmin />
                     }
                 ]
             }
