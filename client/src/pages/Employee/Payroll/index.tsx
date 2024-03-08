@@ -33,7 +33,7 @@ const Payroll = () => {
 
     useEffect(() => {
         if (data) {
-            const filtered = data.filter((item: any) => item?.payroll?.createdAt === selectedValue);
+            const filtered = data.filter((item: any) => item?.payroll?.dateRange === selectedValue);
 
             setFilteredPayroll(filtered);
 
@@ -81,8 +81,13 @@ const Payroll = () => {
                             </SelectTrigger>
                             <SelectContent>
                                 {data?.map((item: any, index: number) => {
-                                    const createdAtDate = new Date(item?.payroll?.createdAt);
-                                    const formattedDate = createdAtDate.toLocaleDateString(
+                                    const [startDateString, endDateString] =
+                                        item?.payroll?.dateRange.split(' ');
+                                    console.log(startDateString);
+                                    const startDate = new Date(startDateString);
+                                    const endDate = new Date(endDateString);
+
+                                    const formattedStartDate = startDate.toLocaleDateString(
                                         'en-US',
                                         {
                                             month: 'long',
@@ -90,10 +95,15 @@ const Payroll = () => {
                                             year: 'numeric'
                                         }
                                     );
+                                    const formattedEndDate = endDate.toLocaleDateString('en-US', {
+                                        month: 'long',
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                    });
 
                                     return (
-                                        <SelectItem value={item?.payroll?.createdAt} key={index}>
-                                            {formattedDate}
+                                        <SelectItem value={item?.payroll?.dateRange} key={index}>
+                                            {`${formattedStartDate} - ${formattedEndDate}`}
                                         </SelectItem>
                                     );
                                 })}

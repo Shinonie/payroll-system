@@ -1,7 +1,7 @@
 import { DataTable } from '@/components/DataTable';
 import { columns } from './columns';
 import { useQuery } from '@tanstack/react-query';
-import { GetAttendance } from '@/api/services/hr/Attendance';
+import { GetAttendance } from '@/api/services/admin/Attendance';
 import { useParams } from 'react-router-dom';
 
 const Attendances = () => {
@@ -26,6 +26,7 @@ const Attendances = () => {
                     date: entry?.date,
                     timeIn: entry?.time?.timeIn,
                     timeOut: entry?.time?.timeOut,
+                    payrollStatus: entry?.payrollStatus,
                     _id: entry?._id
                 }))}
                 filter="date"

@@ -101,9 +101,44 @@ const DeleteAccount = async (req, res) => {
     }
 
     // Delete the employee
-    await employee.remove();
+    await employee.deleteOne();
 
     res.status(200).json({ message: "Account deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const GetAllArchivedAccounts = async (req, res) => {
+  try {
+    const archivedAccounts = await Employee.find({ archive: true });
+    res.status(200).json(archivedAccounts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const RecoverAccount = async (req, res) => {
+  const { controlNumber } = req.body;
+
+  try {
+    const employee = await Employee.findOne({ controlNumber });
+
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    if (!employee.archive) {
+      return res.status(400).json({ message: "Account is not archived" });
+    }
+
+    employee.archive = false;
+
+    await employee.save();
+
+    res.status(200).json({ message: "Account recovered successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
@@ -113,7 +148,8 @@ const DeleteAccount = async (req, res) => {
 export {
   RegisterEmployee,
   GetAllAdmin,
-  CreateSchedule,
+  GetAllArchivedAccounts,
   ArchiveAccount,
   DeleteAccount,
+  RecoverAccount,
 };

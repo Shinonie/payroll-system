@@ -146,6 +146,9 @@ const createPayroll = async (req, res) => {
     }
 
     const dateCreated = new Date().toISOString();
+    const dateRange = `${employeeAttendance[0].date} ${
+      employeeAttendance[employeeAttendance.length - 1].date
+    }`;
 
     const newPayroll = new Payroll({
       employeeID,
@@ -156,6 +159,7 @@ const createPayroll = async (req, res) => {
       overtimePay,
       totalHours: totalWorkHours,
       totalDeductions: totalWorkHours >= 120 ? totalDeductions._id : null,
+      dateRange,
       dateCreated,
       ...(employeeAdjustment.length > 0 && { employeeAdjustment }),
       incentives,

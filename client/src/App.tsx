@@ -9,8 +9,6 @@ import HumanResourceLayout from '@/layout/HumanResourceLayout';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 
-import Admin from '@/pages/Admin';
-
 // EMPLOYEE
 import AttendanceEmployee from '@/pages/Employee/Attendance';
 import ScheduleEmployee from '@/pages/Employee/Schedule';
@@ -26,6 +24,18 @@ import PayrollHR from '@/pages/HumanResource/Payrolls';
 import AdjustmentHR from '@/pages/HumanResource/Adjustments';
 import LeavesHR from '@/pages/HumanResource/Leaves';
 import ScheduleHR from '@/pages/HumanResource/components/Schedules';
+import TaxesHR from '@/pages/HumanResource/Taxes';
+
+// ADMIN
+import EmployeeAdmin from '@/pages/Admin/Employee';
+import AttendancesAdmin from '@/pages/Admin/components/Attendance';
+import PayrollAdmin from '@/pages/Admin/Payrolls';
+import AdjustmentAdmin from '@/pages/Admin/Adjustments';
+import LeavesAdmin from '@/pages/Admin/Leaves';
+import ScheduleAdmin from '@/pages/Admin/components/Schedules';
+import Archive from '@/pages/Admin/Archive';
+import CreateEmployee from '@/pages/Admin/AccountCreation';
+import TaxesAdmin from '@/pages/Admin/Taxes';
 
 const router = createBrowserRouter([
     {
@@ -43,16 +53,6 @@ const router = createBrowserRouter([
             {
                 path: '/register',
                 element: <Register />
-            }
-        ]
-    },
-    {
-        path: '/admin',
-        element: <AdminLayout />,
-        children: [
-            {
-                path: '',
-                element: <Admin />
             }
         ]
     },
@@ -126,6 +126,58 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'leaves',
+                        element: <LeavesAdmin />
+                    },
+                    {
+                        path: 'adjustments',
+                        element: <AdjustmentAdmin />
+                    },
+                    {
+                        path: 'profile',
+                        element: <Profile />
+                    },
+                    {
+                        path: 'taxes',
+                        element: <TaxesHR />
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        path: '/admin',
+        element: <AdminLayout />,
+        children: [
+            {
+                path: '',
+                element: <PrivateRoute allowedRoles={['ADMIN']} />,
+                children: [
+                    {
+                        path: '',
+                        element: <EmployeeAdmin />
+                    },
+                    {
+                        path: 'employees',
+                        element: <EmployeeAdmin />
+                    },
+                    {
+                        path: 'attendance/:id',
+                        element: <AttendancesAdmin />
+                    },
+                    {
+                        path: 'payroll/:id',
+                        element: <PayrollEmployee />
+                    },
+                    {
+                        path: 'schedule/:id',
+                        element: <ScheduleAdmin />
+                    },
+                    {
+                        path: 'payrolls',
+                        element: <PayrollAdmin />
+                    },
+                    {
+                        path: 'leaves',
                         element: <LeavesHR />
                     },
                     {
@@ -135,6 +187,18 @@ const router = createBrowserRouter([
                     {
                         path: 'profile',
                         element: <Profile />
+                    },
+                    {
+                        path: 'archive',
+                        element: <Archive />
+                    },
+                    {
+                        path: 'create-employee',
+                        element: <CreateEmployee />
+                    },
+                    {
+                        path: 'taxes',
+                        element: <TaxesAdmin />
                     }
                 ]
             }
@@ -143,6 +207,7 @@ const router = createBrowserRouter([
 ]);
 
 const queryClient = new QueryClient();
+
 function App() {
     return (
         <QueryClientProvider client={queryClient}>

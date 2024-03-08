@@ -1,9 +1,9 @@
 import { DataTable } from '@/components/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { columns } from './columns';
-import { GetAllLeave } from '@/api/services/hr/Leaves';
+import { GetAllLeave } from '@/api/services/admin/Leaves';
 
-const LeavesHR = () => {
+const LeavesAdmin = () => {
     const { isLoading, data } = useQuery({
         queryFn: GetAllLeave,
         queryKey: ['leaves']
@@ -27,4 +27,4 @@ const LeavesHR = () => {
     );
 };
 
-export default LeavesHR;
+export default LeavesAdmin;

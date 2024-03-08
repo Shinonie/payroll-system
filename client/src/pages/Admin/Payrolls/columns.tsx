@@ -25,7 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { toast } from '@/components/ui/use-toast';
-import { UpdatePayrollStatus } from '@/api/services/hr/Payroll';
+import { UpdatePayrollStatus } from '@/api/services/admin/Payroll';
 import { ExportSdkClient } from '@exportsdk/client';
 import { useState } from 'react';
 
@@ -200,7 +200,7 @@ export const columns = [
                 }
             });
 
-            if (data.status) {
+            if (data?.payroll?.status) {
                 return null;
             }
 

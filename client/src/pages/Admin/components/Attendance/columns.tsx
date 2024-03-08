@@ -31,7 +31,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useParams } from 'react-router-dom';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { UpdateAttendance } from '@/api/services/hr/Attendance';
+import { UpdateAttendance } from '@/api/services/admin/Attendance';
 import { useState } from 'react';
 
 const FormSchema = z.object({
@@ -216,6 +216,10 @@ export const columns = [
                         </pre>
                     )
                 });
+            }
+
+            if (data.payrollStatus) {
+                return null;
             }
 
             return (

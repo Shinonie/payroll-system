@@ -30,7 +30,7 @@ import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { CreateSchedule } from '@/api/services/hr/Schedules';
+import { CreateSchedule } from '@/api/services/admin/Schedules';
 
 const FormSchema = z.object({
     date: z.string().optional(),
@@ -40,7 +40,7 @@ const FormSchema = z.object({
     breakOut: z.string().optional()
 });
 
-const ScheduleHR = () => {
+const ScheduleAdnin = () => {
     const [open, setOpen] = useState(false);
     const { id } = useParams();
     const queryClient = useQueryClient();
@@ -273,4 +273,4 @@ const ScheduleHR = () => {
     );
 };
 
-export default ScheduleHR;
+export default ScheduleAdnin;

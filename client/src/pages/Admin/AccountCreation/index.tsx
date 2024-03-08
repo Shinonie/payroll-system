@@ -18,129 +18,86 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { useUserStore } from '@/store/useUserStore';
-import { GetUserEmployee, EditUserProfile } from '@/api/services/employee/Employee';
-import { ChangePassword } from '@/api/services/AuthServices';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 import { useState } from 'react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { CreateEmployeeAccount } from '@/api/services/admin/Employee';
 
 const EmployeeSchema = z.object({
+    controlNumber: z.string().min(1, { message: 'This field is required' }),
     fullname: z.string().min(1, { message: 'This field is required' }),
     email: z.string().min(1, { message: 'This field is required' }),
     birthday: z.string().datetime(),
     gender: z.string().min(1, { message: 'This field is required' }),
     civilStatus: z.string().min(1, { message: 'This field is required' }),
-    address: z.string().min(1, { message: 'This field is required' })
+    address: z.string().min(1, { message: 'This field is required' }),
+    userType: z.string().min(1, { message: 'This field is required' }),
+    password: z.string().min(8, { message: 'Password must be at least 8 characters long' })
 });
 
-const ChangePasswordSchema = z
-    .object({
-        newPassword: z.string().min(8, { message: 'Password must be at least 8 characters long' }),
-        confirmPassword: z.string()
-    })
-    .refine((data) => data.newPassword === data.confirmPassword, {
-        message: "Passwords don't match",
-        path: ['confirmPassword']
-    });
+function generateRandomPassword() {
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let password = '';
+    for (let i = 0; i < 8; i++) {
+        let randomIndex = Math.floor(Math.random() * charset.length);
+        password += charset[randomIndex];
+    }
+    return password;
+}
 
-const Profile = () => {
-    const employeeID = useUserStore().userId;
-    const [open, setOpen] = useState(false);
+const CreateEmployee = () => {
     const { toast } = useToast();
-
-    const { isLoading, data } = useQuery({
-        queryFn: () => GetUserEmployee(employeeID),
-        queryKey: ['profile'],
-        staleTime: 10000
-    });
+    const [showPassword, setShowPassword] = useState(false);
 
     const queryClient = useQueryClient();
-
-    const { mutate } = useMutation({
-        mutationFn: EditUserProfile,
-        onSuccess: () => {
-            toast({
-                title: 'Profile updated',
-                description: 'Profile has been updated'
-            });
-            queryClient.invalidateQueries({ queryKey: ['profile'] });
-        }
-    });
-
-    const { mutate: changePasswordMutation } = useMutation({
-        mutationFn: ChangePassword,
-        onSuccess: () => {
-            changePasswordForm.reset();
-            setOpen(false);
-            toast({
-                title: 'Change Password',
-                description: 'Password has been changed'
-            });
-        }
-    });
-
-    const changePasswordForm = useForm<z.infer<typeof ChangePasswordSchema>>({
-        resolver: zodResolver(ChangePasswordSchema),
-        defaultValues: {
-            newPassword: '',
-            confirmPassword: ''
-        }
-    });
 
     const form = useForm<z.infer<typeof EmployeeSchema>>({
         resolver: zodResolver(EmployeeSchema),
         defaultValues: {
             fullname: '',
+            controlNumber: '',
             email: '',
+            password: '',
             birthday: '',
             gender: '',
             civilStatus: '',
-            address: ''
+            address: '',
+            userType: ''
         }
     });
 
-    useEffect(() => {
-        if (!isLoading && data) {
-            form.reset(data);
-        }
-    }, [isLoading, data, form]);
-
     const {
-        formState: { errors }
+        formState: { errors },
+        reset
     } = form;
 
-    const {
-        formState: { errors: changePasswordFormErrors }
-    } = changePasswordForm;
+    const { mutate } = useMutation({
+        mutationFn: CreateEmployeeAccount,
+        onSuccess: () => {
+            toast({
+                title: 'Employee Account',
+                description: 'Account is successfully created.'
+            });
+            reset();
+            queryClient.invalidateQueries({ queryKey: ['employee'] });
+        }
+    });
 
     const onSubmit = (data: z.infer<typeof EmployeeSchema>) => {
-        mutate({ id: employeeID, data });
+        mutate(data);
     };
 
-    const onSubmitChangePassword = (data: z.infer<typeof ChangePasswordSchema>) => {
-        changePasswordMutation({ id: employeeID, newPassword: data.confirmPassword });
+    const handleGeneratePassword = () => {
+        const newPassword = generateRandomPassword();
+        form.setValue('password', newPassword);
     };
-
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
 
     return (
-        <div className="h-full md:flex justify-center items-center mt-10">
+        <div className="h-full md:flex justify-center items-center">
             <main className="w-full flex justify-center items-center py-1 md:w-2/3 lg:w-3/4 bg-accent rounded-lg">
                 <div className="p-2 md:p-4">
                     <div className="w-full px-6 pb-8 mt-8 sm:max-w-xl sm:rounded-lg">
@@ -149,85 +106,8 @@ const Profile = () => {
                         <div className="grid max-w-2xl mx-auto">
                             <div className="md:flex justify-between">
                                 <h2 className="text-xl md:text-3xl font-bold max-sm:mb-2">
-                                    MY PROFILE
+                                    REGISTRATION FORM
                                 </h2>
-                                <Dialog open={open} onOpenChange={setOpen}>
-                                    <DialogTrigger asChild>
-                                        <Button variant="outline">Change Password</Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="sm-max:max-w-[425px] ">
-                                        <DialogHeader>
-                                            <DialogTitle>Change Password</DialogTitle>
-                                            <DialogDescription className="text-primary">
-                                                Make sure to remember your new password
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <Form {...changePasswordForm}>
-                                            <form
-                                                onSubmit={changePasswordForm.handleSubmit(
-                                                    onSubmitChangePassword
-                                                )}>
-                                                <div className="grid gap-4 py-4">
-                                                    <FormField
-                                                        control={changePasswordForm.control}
-                                                        name="newPassword"
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <div className="grid grid-cols-4 items-center gap-4">
-                                                                    <Label
-                                                                        htmlFor="newPassword"
-                                                                        className="text-right">
-                                                                        New Password
-                                                                    </Label>
-                                                                    <Input
-                                                                        {...field}
-                                                                        id="newPassword"
-                                                                        type="password"
-                                                                        className="col-span-3"
-                                                                    />
-                                                                </div>
-                                                                {changePasswordFormErrors.confirmPassword && (
-                                                                    <p className="text-red-500 text-sm mt-1">
-                                                                        {
-                                                                            changePasswordFormErrors
-                                                                                .confirmPassword
-                                                                                .message
-                                                                        }
-                                                                    </p>
-                                                                )}
-                                                            </FormItem>
-                                                        )}
-                                                    />
-
-                                                    <FormField
-                                                        control={changePasswordForm.control}
-                                                        name="confirmPassword"
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <div className="grid grid-cols-4 items-center gap-4">
-                                                                    <Label
-                                                                        htmlFor="confirmNewPassword"
-                                                                        className="text-right">
-                                                                        Confirm New Password
-                                                                    </Label>
-                                                                    <Input
-                                                                        {...field}
-                                                                        type="password"
-                                                                        id="confirmNewPassword"
-                                                                        className="col-span-3"
-                                                                    />
-                                                                </div>
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                                <DialogFooter>
-                                                    <Button type="submit">Save changes</Button>
-                                                </DialogFooter>
-                                            </form>
-                                        </Form>
-                                    </DialogContent>
-                                </Dialog>
                             </div>
                             {/* <div className="flex flex-col items-center space-y-5 sm:flex-row sm:space-y-0">
                                 <div className="mt-2">
@@ -260,16 +140,80 @@ const Profile = () => {
                                         <div className="w-full">
                                             <FormField
                                                 control={form.control}
+                                                name="controlNumber"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <Label
+                                                            htmlFor="controlNumber"
+                                                            className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
+                                                            Control Number
+                                                        </Label>
+                                                        <Input
+                                                            {...field}
+                                                            id="controlNumber"
+                                                            className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                                                            placeholder="ex. 2024-0001"
+                                                        />
+                                                        {errors.controlNumber && (
+                                                            <p className="text-red-500 text-sm mt-1">
+                                                                {errors.controlNumber.message}
+                                                            </p>
+                                                        )}
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        <div className="w-full">
+                                            <FormField
+                                                control={form.control}
+                                                name="userType"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <Label className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
+                                                            Employee Type
+                                                        </Label>
+                                                        <Select
+                                                            onValueChange={field.onChange}
+                                                            value={field.value}>
+                                                            <SelectTrigger className="md:w-full">
+                                                                <SelectValue placeholder="Select" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectItem value="EMPLOYEE">
+                                                                    EMPLOYEE
+                                                                </SelectItem>
+                                                                <SelectItem value="ADMIN">
+                                                                    ADMIN
+                                                                </SelectItem>
+                                                                <SelectItem value="HR">
+                                                                    Human Resources
+                                                                </SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        {errors.civilStatus && (
+                                                            <p className="text-red-500 text-sm mt-1">
+                                                                {errors.civilStatus.message}
+                                                            </p>
+                                                        )}
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6 mt-5">
+                                        <div className="w-full">
+                                            <FormField
+                                                control={form.control}
                                                 name="fullname"
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <div className="w-full">
-                                                            <label
+                                                            <Label
                                                                 htmlFor="first_name"
                                                                 className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
                                                                 Full Name
-                                                            </label>
-                                                            <input
+                                                            </Label>
+                                                            <Input
                                                                 {...field}
                                                                 type="text"
                                                                 id="first_name"
@@ -292,9 +236,9 @@ const Profile = () => {
                                                 name="gender"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <label className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
+                                                        <Label className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
                                                             Gender
-                                                        </label>
+                                                        </Label>
                                                         <Select
                                                             onValueChange={field.onChange}
                                                             value={field.value}>
@@ -330,9 +274,9 @@ const Profile = () => {
                                                 name="civilStatus"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <label className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
+                                                        <Label className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
                                                             Civil Status
-                                                        </label>
+                                                        </Label>
                                                         <Select
                                                             onValueChange={field.onChange}
                                                             value={field.value}>
@@ -369,11 +313,11 @@ const Profile = () => {
                                                 name="birthday"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <label
+                                                        <Label
                                                             htmlFor="last_name"
                                                             className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
                                                             Birthday
-                                                        </label>
+                                                        </Label>
                                                         <Popover>
                                                             <PopoverTrigger asChild>
                                                                 <FormControl>
@@ -415,7 +359,6 @@ const Profile = () => {
                                                                                     "yyyy-MM-dd'T'HH:mm:ss'Z'"
                                                                                 );
 
-                                                                            console.log(isoString);
                                                                             field.onChange(
                                                                                 isoString
                                                                             );
@@ -448,12 +391,12 @@ const Profile = () => {
                                                 name="email"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <label
+                                                        <Label
                                                             htmlFor="email"
                                                             className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
                                                             Your email
-                                                        </label>
-                                                        <input
+                                                        </Label>
+                                                        <Input
                                                             {...field}
                                                             type="email"
                                                             id="email"
@@ -469,23 +412,79 @@ const Profile = () => {
                                                 )}
                                             />
                                         </div>
+                                        <div className="flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6 mt-5">
+                                            <div className="w-full">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="password"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <Label
+                                                                htmlFor="password"
+                                                                className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
+                                                                Password
+                                                            </Label>
+                                                            <Input
+                                                                {...field}
+                                                                type={
+                                                                    showPassword
+                                                                        ? 'text'
+                                                                        : 'password'
+                                                                }
+                                                                placeholder="••••••••"
+                                                                id="password"
+                                                                className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                                                            />
+                                                            {errors.password && (
+                                                                <p className="text-red-500 text-sm mt-1">
+                                                                    {errors.password.message}
+                                                                </p>
+                                                            )}
+                                                            <div className="flex items-center gap-2 mt-3">
+                                                                <Checkbox
+                                                                    id="show-password"
+                                                                    onCheckedChange={() =>
+                                                                        setShowPassword(
+                                                                            !showPassword
+                                                                        )
+                                                                    }
+                                                                />
+                                                                <label
+                                                                    htmlFor="show-password"
+                                                                    className="text-sm font-medium leading-none  cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                                                    Show password
+                                                                </label>
+                                                            </div>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <div className="w-full">
+                                                <Button
+                                                    type="button"
+                                                    className="w-full text-white hover:bg-primary-foreground"
+                                                    onClick={handleGeneratePassword}>
+                                                    Generate Password
+                                                </Button>
+                                            </div>
+                                        </div>
                                         <div className="mb-2 sm:mb-6">
                                             <FormField
                                                 control={form.control}
                                                 name="address"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <label
+                                                        <Label
                                                             htmlFor="address"
                                                             className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
                                                             Address
-                                                        </label>
-                                                        <input
+                                                        </Label>
+                                                        <Input
                                                             {...field}
                                                             type="text"
-                                                            id="profession"
+                                                            id="address"
                                                             className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
-                                                            placeholder="Address"
+                                                            placeholder="Employee Address"
                                                         />
                                                         {errors.address && (
                                                             <p className="text-red-500 text-sm mt-1">
@@ -498,11 +497,11 @@ const Profile = () => {
                                         </div>
                                     </div>
                                     <div className="flex justify-end">
-                                        <button
+                                        <Button
                                             type="submit"
                                             className="text-white bg-indigo-700  hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
-                                            Save
-                                        </button>
+                                            Regiter
+                                        </Button>
                                     </div>
                                 </form>
                             </Form>
@@ -514,4 +513,4 @@ const Profile = () => {
     );
 };
 
-export default Profile;
+export default CreateEmployee;

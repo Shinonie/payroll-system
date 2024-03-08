@@ -1,11 +1,14 @@
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
-
-import { toast } from '@/components/ui/use-toast';
-
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 import {
     Dialog,
     DialogContent,
@@ -15,19 +18,18 @@ import {
     DialogTitle,
     DialogTrigger
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { CreatePayroll } from '@/api/services/hr/Payroll';
-import { useState } from 'react';
-
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from '@/components/ui/alert-dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 
 import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 
@@ -35,7 +37,14 @@ import { Button } from '@/components/ui/button';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
+import { toast } from '@/components/ui/use-toast';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+
+import { Input } from '@/components/ui/input';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { CreatePayroll } from '@/api/services/admin/Payroll';
+import { ArchiveEmployees } from '@/api/services/admin/Employee';
 
 const FormSchema = z.object({
     SSSLoan: z.string().optional(),
@@ -108,6 +117,25 @@ export const columns = [
 
             const [open, setOpen] = useState(false);
 
+            const { mutate: archiveEmployee } = useMutation({
+                mutationFn: ArchiveEmployees,
+                onSuccess: () => {
+                    setOpen(false);
+                    queryClient.invalidateQueries({ queryKey: ['employees'] });
+                    toast({
+                        title: 'Archive',
+                        description: 'Archive successfully'
+                    });
+                },
+                onError: () => {
+                    setOpen(false);
+                    toast({
+                        variant: 'destructive',
+                        title: 'Archive',
+                        description: 'Something went wrong'
+                    });
+                }
+            });
             const { mutate } = useMutation({
                 mutationFn: CreatePayroll,
                 onSuccess: () => {
@@ -185,17 +213,18 @@ export const columns = [
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                            <Link to={`/human-resource/attendance/${data._id}`}>
-                                View Attendance
-                            </Link>
+                            <Link to={`/admin/attendance/${data._id}`}>View Attendance</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                            <Link to={`/human-resource/schedule/${data._id}`}>View Schedules</Link>
+                            <Link to={`/admin/schedule/${data._id}`}>View Schedules</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                             <Dialog open={open} onOpenChange={setOpen}>
                                 <DialogTrigger asChild>
-                                    <Button variant="outline" onClick={handleDialogButtonClick}>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                        onClick={handleDialogButtonClick}>
                                         Create Payroll
                                     </Button>
                                 </DialogTrigger>
@@ -319,6 +348,40 @@ export const columns = [
                                     </Form>
                                 </DialogContent>
                             </Dialog>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                        onClick={handleDialogButtonClick}>
+                                        Delete Account
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Are you absolutely sure?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription className="text-foreground">
+                                            This account will move to archive from our servers.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            className="text-white hover:bg-accent"
+                                            onClick={() =>
+                                                archiveEmployee({
+                                                    employeeID: data?._id
+                                                })
+                                            }>
+                                            Continue
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

@@ -1,8 +1,9 @@
 import { DataTable } from '@/components/DataTable';
 import { columns } from './columns';
-import { GetAllPayroll } from '@/api/services/hr/Payroll';
+import { GetAllPayroll } from '@/api/services/admin/Payroll';
 import { useQuery } from '@tanstack/react-query';
-const PayrollHR = () => {
+
+const PayrollAdmin = () => {
     const { isLoading, data } = useQuery({
         queryFn: GetAllPayroll,
         queryKey: ['payrolls']
@@ -21,4 +22,4 @@ const PayrollHR = () => {
     );
 };
 
-export default PayrollHR;
+export default PayrollAdmin;
