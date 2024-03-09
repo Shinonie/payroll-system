@@ -66,8 +66,8 @@ export function UploadAttendance() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="bg-primary text-white gap-2">
-                    <FileUp />
+                <Button className="w-full text-white hover:bg-primary-foreground">
+                    <FileUp className="mr-2" />
                     Upload Attendance
                 </Button>
             </DialogTrigger>
