@@ -12,7 +12,8 @@ const dateFormatISO = (dateString) => {
 };
 
 export const AttendanceTableSetter = async (entries) => {
-  const groupedEntries = [];
+  const formattedTable = [];
+  const errors = [];
 
   await Promise.all(
     entries.map(async (entry) => {
@@ -22,7 +23,7 @@ export const AttendanceTableSetter = async (entries) => {
 
         const entryDate = dateFormatISO(Time);
 
-        let existingEntry = groupedEntries.find(
+        let existingEntry = formattedTable.find(
           (e) =>
             e.employeeID === ID &&
             e.date.split("T")[0] === entryDate.split("T")[0]
@@ -41,7 +42,7 @@ export const AttendanceTableSetter = async (entries) => {
               overtimeOut: null,
             },
           };
-          groupedEntries.push(existingEntry);
+          formattedTable.push(existingEntry);
         }
 
         // Assign times from the entry if not already assigned
@@ -60,9 +61,10 @@ export const AttendanceTableSetter = async (entries) => {
         }
       } catch (error) {
         console.error("Error processing entry:", error);
+        errors.push(error);
       }
     })
   );
 
-  return groupedEntries;
+  return { formattedTable, errors };
 };
