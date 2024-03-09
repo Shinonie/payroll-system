@@ -39,7 +39,9 @@ import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 
 const EmployeeSchema = z.object({
-    fullname: z.string().min(1, { message: 'This field is required' }),
+    firstName: z.string().min(1, { message: 'This field is required' }),
+    lastName: z.string().min(1, { message: 'This field is required' }),
+    middleName: z.string().min(1, { message: 'This field is required' }),
     email: z.string().min(1, { message: 'This field is required' }),
     birthday: z.string().datetime(),
     gender: z.string().min(1, { message: 'This field is required' }),
@@ -80,7 +82,7 @@ const Profile = () => {
             queryClient.invalidateQueries({ queryKey: ['profile'] });
         }
     });
-
+    console.log(data);
     const { mutate: changePasswordMutation } = useMutation({
         mutationFn: ChangePassword,
         onSuccess: () => {
@@ -104,7 +106,9 @@ const Profile = () => {
     const form = useForm<z.infer<typeof EmployeeSchema>>({
         resolver: zodResolver(EmployeeSchema),
         defaultValues: {
-            fullname: '',
+            firstName: '',
+            lastName: '',
+            middleName: '',
             email: '',
             birthday: '',
             gender: '',
@@ -260,25 +264,25 @@ const Profile = () => {
                                         <div className="w-full">
                                             <FormField
                                                 control={form.control}
-                                                name="fullname"
+                                                name="firstName"
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <div className="w-full">
                                                             <label
                                                                 htmlFor="first_name"
                                                                 className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
-                                                                Full Name
+                                                                First Name
                                                             </label>
                                                             <input
                                                                 {...field}
                                                                 type="text"
                                                                 id="first_name"
                                                                 className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
-                                                                placeholder="Full Name"
+                                                                placeholder="First Name"
                                                             />
-                                                            {errors.fullname && (
+                                                            {errors.firstName && (
                                                                 <p className="text-red-500 text-sm mt-1">
-                                                                    {errors.fullname.message}
+                                                                    {errors.firstName.message}
                                                                 </p>
                                                             )}
                                                         </div>
@@ -286,6 +290,66 @@ const Profile = () => {
                                                 )}
                                             />
                                         </div>
+                                        <div className="w-full">
+                                            <FormField
+                                                control={form.control}
+                                                name="middleName"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <div className="w-full">
+                                                            <label
+                                                                htmlFor="first_name"
+                                                                className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
+                                                                Middle Name
+                                                            </label>
+                                                            <input
+                                                                {...field}
+                                                                type="text"
+                                                                id="first_name"
+                                                                className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                                                                placeholder="Middle Name"
+                                                            />
+                                                            {errors.middleName && (
+                                                                <p className="text-red-500 text-sm mt-1">
+                                                                    {errors.middleName.message}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        <div className="w-full">
+                                            <FormField
+                                                control={form.control}
+                                                name="lastName"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <div className="w-full">
+                                                            <label
+                                                                htmlFor="first_name"
+                                                                className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
+                                                                Last Name
+                                                            </label>
+                                                            <input
+                                                                {...field}
+                                                                type="text"
+                                                                id="first_name"
+                                                                className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                                                                placeholder="Last Name"
+                                                            />
+                                                            {errors.lastName && (
+                                                                <p className="text-red-500 text-sm mt-1">
+                                                                    {errors.lastName.message}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6">
                                         <div className="w-full">
                                             <FormField
                                                 control={form.control}
@@ -322,8 +386,6 @@ const Profile = () => {
                                                 )}
                                             />
                                         </div>
-                                    </div>
-                                    <div className="flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6">
                                         <div className="w-full">
                                             <FormField
                                                 control={form.control}
