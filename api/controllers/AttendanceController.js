@@ -18,7 +18,13 @@ const uploadAttendanceCSV = async (req, res) => {
 
     const jsonArray = await csvtojson().fromFile(csvFilePath);
 
-    const formattedTable = await AttendanceTableSetter(jsonArray);
+    const { formattedTable, errors } = await AttendanceTableSetter(jsonArray);
+
+    if (errors.length > 0) {
+      return res
+        .status(400)
+        .json({ error: "Error processing entries", errors });
+    }
 
     const formattedData = await AttendanceStatusSetter(formattedTable);
     await Attendance.insertMany(formattedData);

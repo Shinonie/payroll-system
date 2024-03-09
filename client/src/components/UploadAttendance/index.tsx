@@ -32,6 +32,15 @@ export function UploadAttendance() {
                 title: 'Update Attendance',
                 description: 'Attendance successfully update'
             });
+        },
+        onError: () => {
+            setOpen(false);
+            queryClient.invalidateQueries({ queryKey: ['attendance'] });
+            toast({
+                variant: 'destructive',
+                title: 'Something went wrong',
+                description: 'Attendance File Data is not compatible'
+            });
         }
     });
 
