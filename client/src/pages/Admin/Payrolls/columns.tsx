@@ -123,7 +123,7 @@ export const columns = [
                         pagibigLoan: data?.deduction?.PagibigLoan || 0,
                         philhealth: data?.deduction?.PhilHealth || 0,
                         type: data?.adjustment?.adjustment?.type,
-                        workhours: data?.payroll?.overtimeHours + data?.payroll?.totalHours,
+                        workhours: data?.adjustment?.adjustment?.workHours,
                         netPay: data?.payroll?.totalNetPay
                     };
 

@@ -12,15 +12,13 @@ import {
 } from "../utils/TaxCalculator.js";
 
 const createPayroll = async (req, res) => {
-  const {
-    employeeID,
-    SSSLoan,
-    PagibigLoan,
-    hourlyRate,
-    incentives,
-    allowance,
-  } = req.body;
+  const { employeeID } = req.body;
   try {
+    const employeeData = await Employee.findOne({ controlNumber: employeeID });
+
+    const { SSSLoan, PagibigLoan, hourlyRate, incentives, allowance } =
+      employeeData;
+
     const employeeAttendance = await Attendance.find({
       employeeID,
       adjustment: false,
@@ -240,6 +238,188 @@ const createPayroll = async (req, res) => {
   }
 };
 
+const createPayrollPreview = async (req, res) => {
+  const { employeeID } = req.params;
+  try {
+    const employeeData = await Employee.findOne({ controlNumber: employeeID });
+
+    const employeeJson = employeeData.toJSON();
+
+    const {
+      SSSLoan,
+      PagibigLoan,
+      hourlyRate,
+      incentives,
+      allowance,
+      fullname,
+    } = employeeJson;
+
+    const employeeAttendance = await Attendance.find({
+      employeeID,
+      adjustment: false,
+      payrollStatus: false,
+    });
+
+    if (employeeAttendance.length == 0) {
+      return res.status(404).json({ message: "No Active Payroll" });
+    }
+
+    const employee = await Employee.find({
+      controlNumber: employeeID,
+      adjustment: true,
+    });
+
+    let statusValue;
+    let nextPayrollValue;
+
+    if (employee.length > 0) {
+      nextPayrollValue = true;
+      statusValue = false;
+    }
+
+    const employeeAdjustment = await Adjustment.find({
+      employeeID,
+      nextPayroll: { $eq: nextPayrollValue },
+      status: { $eq: statusValue },
+    });
+
+    const totalAdjustmentHour = employeeAdjustment.reduce(
+      (total, adjustment) => {
+        const workHours = adjustment.adjustment.workHours || 0; // Handle cases where workHours might be undefined
+        return total + workHours;
+      },
+      0
+    );
+
+    const attendanceError = employeeAttendance
+      .filter((attendance) => attendance.status === "ERROR")
+      .map((attendance) => attendance.time);
+
+    const attendanceSummary = employeeAttendance.reduce(
+      (summary, attendance) => {
+        switch (attendance.status) {
+          case "OVERTIME":
+            summary.overtimeRecords.push({
+              overtimeHour: attendance.overtimeHour,
+            });
+            break;
+          case "LATE":
+            summary.late.push(attendance);
+            break;
+          case "ONTIME":
+            summary.ontime.push(attendance);
+            break;
+          case "UNDERTIME":
+            summary.undertime.push(attendance);
+            break;
+          default:
+            summary.other.push(attendance);
+        }
+        return summary;
+      },
+      { overtimeRecords: [], late: [], ontime: [], undertime: [], other: [] }
+    );
+
+    const { overtimeRecords, late, ontime, undertime } = attendanceSummary;
+
+    const mergedAttendance = [...late, ...ontime, ...undertime];
+
+    const totalOvertimeHours = overtimeRecords.reduce(
+      (total, overtimeHour) => total + Number(overtimeHour),
+      0
+    );
+
+    const hoursDifferences = TimeCalculator(mergedAttendance);
+
+    const totalRegularHour = hoursDifferences.reduce(
+      (acc, hours) => acc + hours,
+      0
+    );
+
+    const totalDaysPresent = employeeAttendance.length;
+    const overtimeRate = hourlyRate * 1.25;
+    const overtimePay = totalOvertimeHours * overtimeRate;
+    const totalAdjustmentPay = Number(totalAdjustmentHour) * hourlyRate || 0;
+
+    const totalWorkHours = totalOvertimeHours + totalRegularHour;
+
+    let SSS = 0;
+    let Pagibig = 0;
+    let PhilHealth = 0;
+    let incomeTax = 0;
+    const montlySalary = hourlyRate * 8 * 26;
+
+    if (totalWorkHours >= 120) {
+      SSS = await SSSEEContribution(montlySalary);
+      Pagibig = await PagIbigContribution(montlySalary);
+      PhilHealth = await PhilHealthContribution(montlySalary);
+      incomeTax = IncomeTaxContribution(montlySalary);
+    }
+    const allowanceNumber = Number(allowance);
+    const incentivesNumber = Number(incentives);
+    const totalGrossPay =
+      totalWorkHours * hourlyRate +
+      overtimePay +
+      allowanceNumber +
+      incentivesNumber +
+      totalAdjustmentPay;
+
+    let totalNetPay;
+    if (totalWorkHours >= 120) {
+      totalNetPay =
+        totalGrossPay -
+        (Number(SSS) +
+          Number(SSSLoan) +
+          Number(Pagibig) +
+          Number(PagibigLoan) +
+          Number(incomeTax) +
+          Number(PhilHealth));
+    } else {
+      totalNetPay = totalGrossPay; // No deductions if totalWorkHours < 120
+    }
+
+    const dateCreated = new Date().toISOString();
+    const dateRange = `${employeeAttendance[0].date} ${
+      employeeAttendance[employeeAttendance.length - 1].date
+    }`;
+
+    const payrollPreview = {
+      employeeID,
+      fullname,
+      totalDaysPresent,
+      montlySalaryRate: montlySalary,
+      hourlyRate,
+      overtimeHours: totalOvertimeHours,
+      overtimePay,
+      totalHours: totalWorkHours,
+      dateRange,
+      dateCreated,
+      employeeAdjustment:
+        employeeAdjustment.length > 0 ? employeeAdjustment : null,
+      attendanceError:
+        attendanceError.length > 0
+          ? {
+              message:
+                "Please settle ask for the employee to settle their attendance errors",
+              attendanceError,
+            }
+          : null,
+      incentives,
+      allowance,
+      totalGrossPay: totalGrossPay,
+      totalNetPay: totalNetPay,
+    };
+
+    res.status(200).json({
+      message: "Payroll preview generated successfully",
+      payrollPreview,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const getPayrollByEmployee = async (req, res) => {
   const { employeeID } = req.params;
 
@@ -340,7 +520,7 @@ const getAllPayrolls = async (req, res) => {
   try {
     const payrolls = await Payroll.find().populate({
       path: "employeeID",
-      select: "fullname",
+      select: "_id firstName middleName lastName",
     });
 
     const payrollDetails = await Promise.all(
@@ -395,6 +575,7 @@ const PayrollRelease = async (req, res) => {
 
 export {
   createPayroll,
+  createPayrollPreview,
   getPayrollByEmployee,
   updatePayroll,
   deletePayroll,

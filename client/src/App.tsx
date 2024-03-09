@@ -130,7 +130,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'adjustments',
-                        element: <AdjustmentAdmin />
+                        element: <AdjustmentHR />
                     },
                     {
                         path: 'profile',
@@ -177,12 +177,16 @@ const router = createBrowserRouter([
                         element: <PayrollAdmin />
                     },
                     {
+                        path: 'payroll/:id',
+                        element: <PayrollAdmin />
+                    },
+                    {
                         path: 'leaves',
                         element: <LeavesHR />
                     },
                     {
                         path: 'adjustments',
-                        element: <AdjustmentHR />
+                        element: <AdjustmentAdmin />
                     },
                     {
                         path: 'profile',

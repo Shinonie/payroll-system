@@ -12,6 +12,7 @@ const AdjustmentAdmin = () => {
     if (isLoading) {
         return <div>Loading...</div>;
     }
+
     return (
         <div>
             <div className="flex justify-between">

@@ -17,9 +17,13 @@ const EmployeeAdmin = () => {
     return (
         <div>
             <div className="flex justify-between">
-                <h1 className="text-2xl font-semibold">ALL EMPLOYEES</h1>
+                <div>
+                    <h1 className="text-3xl font-semibold">ALL EMPLOYEES</h1>
+                    <h1 className="text-xl font-semibold">
+                        You may create PAYROLL and UPLOAD ATTENDANCE HERE
+                    </h1>
+                </div>
                 <UploadAttendance />
-                {/* <ExportPdfComponent /> */}
             </div>
             <DataTable data={data} columns={columns} filter="email" />
         </div>

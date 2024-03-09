@@ -7,7 +7,9 @@ import jwt from "jsonwebtoken";
 const register = async (req, res) => {
   const {
     controlNumber,
-    fullname,
+    firstName,
+    lastName,
+    middleName,
     email,
     password,
     birthday,
@@ -15,6 +17,11 @@ const register = async (req, res) => {
     civilStatus,
     address,
     userType,
+    SSSLoan,
+    PagibigLoan,
+    allowance,
+    incentives,
+    hourlyRate,
   } = req.body;
 
   try {
@@ -25,6 +32,15 @@ const register = async (req, res) => {
 
     // Check if an employee with the same email already exists
     const existingEmployee = await Employee.findOne({ email });
+
+    const existingControlNumberEmployee = await Employee.findOne({
+      controlNumber,
+    });
+    if (existingControlNumberEmployee) {
+      return res
+        .status(400)
+        .json({ message: "Employee with this control number already exists" });
+    }
 
     if (existingEmployee) {
       return res
@@ -38,13 +54,20 @@ const register = async (req, res) => {
     const newEmployee = new Employee({
       _id: controlNumber,
       controlNumber,
-      fullname,
+      firstName,
+      lastName,
+      middleName,
       email,
       password: hashedPassword,
       birthday,
       gender,
       civilStatus,
       address,
+      SSSLoan,
+      PagibigLoan,
+      allowance,
+      incentives,
+      hourlyRate,
       userType,
     });
 

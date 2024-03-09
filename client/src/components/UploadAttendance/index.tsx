@@ -55,7 +55,7 @@ export function UploadAttendance() {
     };
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline" className="bg-primary text-white gap-2">
                     <FileUp />
