@@ -127,7 +127,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'leaves',
-                        element: <LeavesAdmin />
+                        element: <LeavesHR />
                     },
                     {
                         path: 'adjustments',
@@ -179,7 +179,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'leaves',
-                        element: <LeavesHR />
+                        element: <LeavesAdmin />
                     },
                     {
                         path: 'adjustments',

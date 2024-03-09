@@ -19,6 +19,7 @@ const LeavesAdmin = () => {
 
     const sortedData = pendingData.concat(nonPendingData);
 
+    console.log(sortedData);
     return (
         <div>
             <h1 className="text-2xl font-semibold">EMPLOYEE LEAVES</h1>
