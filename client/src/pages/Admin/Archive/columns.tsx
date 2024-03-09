@@ -164,7 +164,8 @@ export const columns = [
                                             Are you absolutely sure?
                                         </AlertDialogTitle>
                                         <AlertDialogDescription className="text-foreground">
-                                            This account will move to archive from our servers.
+                                            This account will recover and remove to archive from our
+                                            servers.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
@@ -198,7 +199,7 @@ export const columns = [
                                             Are you absolutely sure?
                                         </AlertDialogTitle>
                                         <AlertDialogDescription className="text-foreground">
-                                            This account will move to archive from our servers.
+                                            This account will PERMANENTLY from our servers.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
