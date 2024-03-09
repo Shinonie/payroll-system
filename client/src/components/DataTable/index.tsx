@@ -62,9 +62,9 @@ export function DataTable({ data, columns, filter }: any) {
                 <Input
                     placeholder="Search..."
                     value={(table.getColumn(filter)?.getFilterValue() as string) ?? ''}
-                    onChange={(event) =>
-                        table.getColumn(filter)?.setFilterValue(event.target.value)
-                    }
+                    onChange={(event) => {
+                        table.getColumn(filter)?.setFilterValue(event.target.value);
+                    }}
                     className="max-w-sm"
                 />
                 <DropdownMenu>
@@ -141,8 +141,7 @@ export function DataTable({ data, columns, filter }: any) {
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
                 <div className="flex-1 text-sm text-primary-foreground">
-                    {table.getFilteredSelectedRowModel().rows.length} of{' '}
-                    {table.getFilteredRowModel().rows.length} row(s) selected.
+                    The total row(s) is {table.getFilteredRowModel().rows.length}.
                 </div>
                 <div className="space-x-2">
                     <Button

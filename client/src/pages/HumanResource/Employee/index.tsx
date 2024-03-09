@@ -14,6 +14,8 @@ const EmployeeHR = () => {
         return <div>Loading...</div>;
     }
 
+    console.log(data);
+
     return (
         <div>
             <div className="flex justify-between">
