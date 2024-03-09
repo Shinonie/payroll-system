@@ -211,12 +211,12 @@ export const columns = [
                                             Are you absolutely sure?
                                         </AlertDialogTitle>
                                         <AlertDialogDescription className="text-foreground">
-                                            This actions will create a new payroll of employee. You
-                                            may view the details of payroll
+                                            This actions will create a new payroll of employee. If
+                                            you want to view the Preview Payroll
                                             <Link
                                                 to={`/admin/payroll/${data._id}`}
                                                 className="underline font-bold ml-1">
-                                                here.
+                                                CLICK HERE.
                                             </Link>
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>

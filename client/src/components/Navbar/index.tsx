@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 
 const Navbar = ({ fullname, email, navLinks, onLogout }: any) => {
     return (
-        <nav className="md:h-screen w-full md:w-[300px] md:fixed bg-accent-foreground flex flex-col gap-5 py-5 px-8 text-accent">
+        <nav className="md:h-screen w-full md:w-[300px] md:fixed bg-accent-foreground flex flex-col gap-5 py-5 px-8">
             <div className="mx-5 grid place-items-center">
                 <img className="w-20 h-20" src={logo} alt="Company Logo" />
             </div>
@@ -21,7 +21,7 @@ const Navbar = ({ fullname, email, navLinks, onLogout }: any) => {
                     </Avatar>
                     <div className="md:flex flex-col">
                         <h1 className="text-lg capitalize">{fullname}</h1>
-                        <h1 className="text-sm lowercase">{email}</h1>
+                        <h1 className="text-sm lowercase truncate">{email}</h1>
                     </div>
                 </NavLink>
             </div>
@@ -40,7 +40,7 @@ const Navbar = ({ fullname, email, navLinks, onLogout }: any) => {
                     ))}
                     <div>
                         <Button
-                            className="w-full text-background bg-accent hover:bg-accent-foreground hover:text-slate-400"
+                            className="w-full text-white hover:bg-primary-foreground"
                             onClick={onLogout}>
                             LOGOUT
                         </Button>
