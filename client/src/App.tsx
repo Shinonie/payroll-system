@@ -36,6 +36,7 @@ import ScheduleAdmin from '@/pages/Admin/components/Schedules';
 import Archive from '@/pages/Admin/Archive';
 import CreateEmployee from '@/pages/Admin/AccountCreation';
 import TaxesAdmin from '@/pages/Admin/Taxes';
+import PayrollPreview from '@/components/PayrollPreview';
 
 const router = createBrowserRouter([
     {
@@ -114,7 +115,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'payroll/:id',
-                        element: <PayrollEmployee />
+                        element: <PayrollPreview />
                     },
                     {
                         path: 'schedule/:id',
@@ -166,7 +167,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'payroll/:id',
-                        element: <PayrollEmployee />
+                        element: <PayrollPreview />
                     },
                     {
                         path: 'schedule/:id',
@@ -174,10 +175,6 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'payrolls',
-                        element: <PayrollAdmin />
-                    },
-                    {
-                        path: 'payroll/:id',
                         element: <PayrollAdmin />
                     },
                     {

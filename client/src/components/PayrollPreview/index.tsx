@@ -1,11 +1,4 @@
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from '@/components/ui/select';
-import {
     Table,
     TableBody,
     TableCell,
@@ -13,56 +6,66 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table';
-import { useQuery } from '@tanstack/react-query';
-import { GetUserPayroll } from '@/api/services/employee/payroll';
-import { useUserStore } from '@/store/useUserStore';
-import { useState, useEffect } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { CreatePayroll, GetPayrollPreview } from '@/api/services/admin/Payroll';
+import { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from '../ui/use-toast';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from '../ui/alert-dialog';
+import { Button } from '../ui/button';
 
-const Payroll = () => {
-    const employeeID = useUserStore().userId;
-    const employeeName = useUserStore().fullname;
-    const [selectedValue, setSelectedValue] = useState('');
-    const [filteredPayroll, setFilteredPayroll] = useState<any[]>([]);
-    const [totalIncentive, setTotalIncentive] = useState(0);
-    const [adjustmentDate, setAdjustmentDate] = useState('');
+const PayrollPreview = () => {
+    const { id } = useParams();
+    const navigate = useNavigate();
 
-    const { data } = useQuery({
-        queryFn: () => GetUserPayroll(employeeID),
-        queryKey: ['payroll']
+    const { mutate: createPayroll } = useMutation({
+        mutationFn: CreatePayroll,
+        onSuccess: () => {
+            toast({
+                title: 'Payroll',
+                description: 'Payroll successfully created'
+            });
+            navigate(-1);
+        },
+        onError: () => {
+            toast({
+                variant: 'destructive',
+                title: 'Payroll',
+                description:
+                    'Payroll is not available, due to existing payroll or no present attendance.'
+            });
+        }
+    });
+
+    const { isLoading, isError, data } = useQuery({
+        queryFn: () => GetPayrollPreview(id),
+        queryKey: [`preview-${id}`]
     });
 
     useEffect(() => {
-        if (data) {
-            const filtered = data.filter(
-                (item: any) => item?.payroll?.dateCreated === selectedValue
-            );
-
-            setFilteredPayroll(filtered);
-
-            const totalIncentiveValue =
-                filtered[0]?.payroll?.incentives + filtered[0]?.payroll?.allowance;
-            setTotalIncentive(totalIncentiveValue);
-
-            if (
-                filteredPayroll[0]?.adjustment?.adjustment?.attendance?.timeIn &&
-                filteredPayroll[0]?.adjustment?.adjustment?.attendance?.timeOut
-            ) {
-                const createdAtDate = new Date(
-                    filteredPayroll[0]?.adjustment?.adjustment?.attendance?.timeIn
-                );
-                const formattedDate = createdAtDate.toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric'
-                });
-                setAdjustmentDate(formattedDate);
-            }
+        if (isError) {
+            navigate('/admin');
+            toast({
+                variant: 'destructive',
+                title: 'Payroll',
+                description:
+                    'Payroll is not available, due to existing payroll or no present attendance.'
+            });
         }
-    }, [data, selectedValue, totalIncentive, adjustmentDate]);
+    }, [isError]);
 
-    if (!data) {
-        console.log('Schedule data is still loading or undefined');
-        return null; // loading indicator
+    if (isLoading || !data) {
+        return <div>Loading</div>;
     }
 
     return (
@@ -72,53 +75,62 @@ const Payroll = () => {
             </div>
             <div className="flex flex-col flex-wrap">
                 <div className="flex justify-between flex-wrap">
-                    <h1 className="font-semibold">
-                        Payroll ID: # {filteredPayroll[0]?.payroll?._id}
-                    </h1>
-                    <h1 className="font-semibold flex items-center flex-wrap gap-5">
-                        <span>Payroll Created: </span>
-                        <Select onValueChange={(e) => setSelectedValue(e)}>
-                            <SelectTrigger className="w-[300px]">
-                                <SelectValue placeholder="Select Date" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {data?.map((item: any, index: number) => {
-                                    const createdAtDate = new Date(item?.payroll?.dateCreated);
-                                    const formattedDate = createdAtDate.toLocaleDateString(
-                                        'en-US',
-                                        {
-                                            month: 'long',
-                                            day: 'numeric',
-                                            year: 'numeric'
-                                        }
-                                    );
-
-                                    return (
-                                        <SelectItem value={item?.payroll?.dateCreated} key={index}>
-                                            {formattedDate}
-                                        </SelectItem>
-                                    );
-                                })}
-                            </SelectContent>
-                        </Select>
-                    </h1>
+                    <div>
+                        <h1 className="font-semibold flex items-center flex-wrap gap-5">
+                            <span>
+                                Payroll will create on:{' '}
+                                {data?.payrollPreview?.dateCreated.split('T')[0]}
+                            </span>
+                        </h1>
+                        <h1 className="font-semibold">
+                            Payroll Period:{' '}
+                            {`${data?.payrollPreview?.dateRange.split(' ')[0].split('T')[0]} to ${data?.payrollPreview?.dateRange.split(' ')[1].split('T')[0]}`}
+                        </h1>
+                        <h1 className="font-semibold flex items-center flex-wrap gap-5">
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button className="w-full mt-1 text-white hover:bg-primary-foreground">
+                                        Create Payroll
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Are you absolutely sure?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription className="text-foreground">
+                                            This actions will create a new payroll of employee.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            className="text-white hover:bg-accent"
+                                            onClick={() =>
+                                                createPayroll({
+                                                    employeeID: data?.payrollPreview?.employeeID
+                                                })
+                                            }>
+                                            Continue
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </h1>
+                    </div>
                 </div>
                 <div className="flex flex-wrap justify-between mt-5">
                     <div className="text-lg">
-                        <h1>Employee ID: {employeeID}</h1>
-                        <h1>Name: {employeeName.toUpperCase()}</h1>
-                        <h1>Basic Pay: &#8369; {filteredPayroll[0]?.payroll?.montlySalaryRate}</h1>
-                        <h1>Hourly Rate: &#8369; {filteredPayroll[0]?.payroll?.hourlyRate}</h1>
+                        <h1>Employee ID: {data?.payrollPreview?.employeeID}</h1>
+                        <h1>Name: {data?.payrollPreview?.fullname.toUpperCase()}</h1>
+                        <h1>Basic Pay: &#8369; {data?.payrollPreview?.montlySalaryRate}</h1>
+                        <h1>Hourly Rate: &#8369; {data?.payrollPreview?.hourlyRate}</h1>
                     </div>
                     <div className="text-lg">
-                        <h1>Gross Pay: &#8369; {filteredPayroll[0]?.payroll?.totalGrossPay}</h1>
-                        <h1>Net Pay: &#8369; {filteredPayroll[0]?.payroll?.totalNetPay}</h1>
-                        <h1>Days Working: {filteredPayroll[0]?.payroll?.totalDaysPresent}</h1>
-                        <h1>Overtime Hours: {filteredPayroll[0]?.payroll?.overtimeHours}</h1>
-                        <h1>
-                            Payroll Period:{' '}
-                            {`${filteredPayroll[0]?.payroll?.dateRange.split(' ')[0].split('T')[0]} to ${filteredPayroll[0]?.payroll?.dateRange.split(' ')[1].split('T')[0]}`}
-                        </h1>
+                        <h1>Gross Pay: &#8369; {data?.payrollPreview?.totalGrossPay}</h1>
+                        <h1>Net Pay: &#8369; {data?.payrollPreview?.totalNetPay}</h1>
+                        <h1>Days Working: {data?.payrollPreview?.totalDaysPresent}</h1>
+                        <h1>Overtime Hours: {data?.payrollPreview?.overtimeHours}</h1>
                     </div>
                 </div>
             </div>
@@ -135,8 +147,8 @@ const Payroll = () => {
                             <TableCell className="text-center">INCENTIVES</TableCell>
                             <TableCell className="text-center">
                                 &#8369;{' '}
-                                {filteredPayroll[0]?.payroll?.incentives
-                                    ? filteredPayroll[0]?.payroll?.incentives
+                                {data?.payrollPreview?.incentives
+                                    ? data?.payrollPreview?.incentives
                                     : '0.00'}
                             </TableCell>
                         </TableRow>
@@ -144,8 +156,8 @@ const Payroll = () => {
                             <TableCell className="text-center">ALLOWANCE</TableCell>
                             <TableCell className="text-center">
                                 &#8369;{' '}
-                                {filteredPayroll[0]?.payroll?.allowance
-                                    ? filteredPayroll[0]?.payroll?.allowance
+                                {data?.payrollPreview?.allowance
+                                    ? data?.payrollPreview?.allowance
                                     : '0.00'}
                             </TableCell>
                         </TableRow>
@@ -153,8 +165,8 @@ const Payroll = () => {
                             <TableCell className="text-center">OVERTIME</TableCell>
                             <TableCell className="text-center">
                                 &#8369;{' '}
-                                {filteredPayroll[0]?.payroll?.overtimePay
-                                    ? filteredPayroll[0]?.payroll?.overtimePay
+                                {data?.payrollPreview?.overtimePay
+                                    ? data?.payrollPreview?.overtimePay
                                     : '0.00'}
                             </TableCell>
                         </TableRow>
@@ -163,13 +175,16 @@ const Payroll = () => {
                                 TOTAL
                             </TableCell>
                             <TableCell className="text-center bg-accent text-accent-foreground font-semibold">
-                                &#8369; {totalIncentive ? totalIncentive : '0.00'}
+                                &#8369;{' '}
+                                {data?.payrollPreview?.allowance +
+                                    data?.payrollPreview?.incentives +
+                                    data?.payrollPreview?.overtimePay}
                             </TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>
             </div>
-            {filteredPayroll[0]?.deduction && (
+            {/* {filteredPayroll[0]?.deduction && (
                 <div className="mt-10">
                     <Table>
                         <TableHeader className="bg-primary-foreground">
@@ -226,8 +241,8 @@ const Payroll = () => {
                         </TableBody>
                     </Table>
                 </div>
-            )}
-            {filteredPayroll[0]?.adjustment && (
+            )} */}
+            {data?.payrollPreview?.employeeAdjustment && (
                 <div className="mt-10">
                     <h1 className="font-semibold py-5 text-xl">ADJUSTMENT</h1>
                     <Table>
@@ -242,22 +257,25 @@ const Payroll = () => {
                         <TableBody className="bg-accent-foreground ">
                             <TableRow>
                                 <TableCell className="text-center">
-                                    {filteredPayroll[0]?.adjustment?.adjustment?.attendance
-                                        ?.timeIn &&
-                                        filteredPayroll[0]?.adjustment?.adjustment?.attendance
-                                            ?.timeOut &&
-                                        adjustmentDate}
+                                    {
+                                        data?.payrollPreview?.employeeAdjustment[0].adjustment.attendance?.timeIn.split(
+                                            'T'
+                                        )[0]
+                                    }
                                 </TableCell>
                                 <TableCell className="text-center">
-                                    {filteredPayroll[0]?.adjustment?.adjustment?.type}
+                                    {data?.payrollPreview?.employeeAdjustment[0].adjustment?.type}
                                 </TableCell>
                                 <TableCell className="text-center">
-                                    {filteredPayroll[0]?.adjustment?.adjustment?.workHours}
+                                    {
+                                        data?.payrollPreview?.employeeAdjustment[0].adjustment
+                                            ?.workHours
+                                    }
                                 </TableCell>
                                 <TableCell className="text-center">
                                     &#8369;{' '}
-                                    {filteredPayroll[0]?.adjustment?.adjustment?.workHours *
-                                        filteredPayroll[0]?.payroll?.hourlyRate}
+                                    {data?.payrollPreview?.employeeAdjustment[0].adjustment
+                                        ?.workHours * data?.payrollPreview?.hourlyRate}
                                 </TableCell>
                             </TableRow>
                             <TableRow>
@@ -268,8 +286,8 @@ const Payroll = () => {
                                 </TableCell>
                                 <TableCell className="text-center bg-accent text-accent-foreground font-semibold">
                                     &#8369;{' '}
-                                    {filteredPayroll[0]?.adjustment?.adjustment?.workHours *
-                                        filteredPayroll[0]?.payroll?.hourlyRate}
+                                    {data?.payrollPreview?.employeeAdjustment[0].adjustment
+                                        ?.workHours * data?.payrollPreview?.hourlyRate}
                                 </TableCell>
                             </TableRow>
                         </TableBody>
@@ -280,4 +298,4 @@ const Payroll = () => {
     );
 };
 
-export default Payroll;
+export default PayrollPreview;

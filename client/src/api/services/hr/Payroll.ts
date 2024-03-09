@@ -40,3 +40,13 @@ export const CreatePayroll = async (data: any) => {
         throw error;
     }
 };
+
+export const GetPayrollPreview = async (data: any) => {
+    try {
+        const response = await axiosInstance.get(`/payroll/payroll/preview/${data}`);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};
