@@ -12,7 +12,6 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles, fallbackPath 
     const { accessToken, userType } = useAuthStore();
     const location = useLocation();
 
-    console.log('render');
     if (!accessToken) {
         return <Navigate to={fallbackPath} state={{ from: location }} replace />;
     }
