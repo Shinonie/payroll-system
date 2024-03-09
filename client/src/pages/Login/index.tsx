@@ -36,10 +36,16 @@ const Login = () => {
             if (userType === 'EMPLOYEE') {
                 navigate('/employee');
             }
+            if (userType === 'HR') {
+                navigate('/human-resource');
+            }
+            if (userType === 'ADMIN') {
+                navigate('/admin');
+            }
         } else {
             navigate('/login');
         }
-    }, []);
+    }, [accessToken]);
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -64,13 +70,13 @@ const Login = () => {
             setUserDetails(data.user.id, data.user.email, data.user.fullname);
 
             if (data.user.userType === 'EMPLOYEE') {
-                navigate('/employee');
+                navigate('/employee', { replace: true });
             }
             if (data.user.userType === 'HR') {
-                navigate('/human-resource');
+                navigate('/human-resource', { replace: true });
             }
             if (data.user.userType === 'ADMIN') {
-                navigate('/admin');
+                navigate('/admin', { replace: true });
             }
         } catch (error) {
             toast({

@@ -9,3 +9,14 @@ export const GetAllEmployees = async () => {
         throw error;
     }
 };
+
+export const EditUserProfile = async (userProfile: any) => {
+    const { employeeID, data } = userProfile;
+    try {
+        const response = await axiosInstance.put(`/employee/edit-profile/${employeeID}`, data);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};

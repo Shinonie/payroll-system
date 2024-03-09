@@ -61,6 +61,22 @@ export const columns = [
         cell: ({ row }: any) => <div className="capitalize">{row.getValue('_id')}</div>
     },
     {
+        accessorKey: 'employment date',
+        header: 'Employment Date',
+        cell: ({ row }: any) => {
+            const data = row.original;
+            return (
+                <div className="capitalize">
+                    {new Date(data.createdAt).toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                    })}
+                </div>
+            );
+        }
+    },
+    {
         accessorKey: 'email',
         header: ({ column }: any) => {
             return (
@@ -198,7 +214,7 @@ export const columns = [
                                             This actions will create a new payroll of employee. You
                                             may view the details of payroll
                                             <Link
-                                                to={`/admin/schedule/${data._id}`}
+                                                to={`/admin/payroll/${data._id}`}
                                                 className="underline font-bold ml-1">
                                                 here.
                                             </Link>
@@ -262,8 +278,6 @@ export const columns = [
         header: 'Extras',
         cell: ({ row }: any) => {
             const data = row.original;
-
-            const queryClient = useQueryClient();
 
             const [open, setOpen] = useState(false);
 
