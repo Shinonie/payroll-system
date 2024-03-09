@@ -57,8 +57,20 @@ export const DeleteArchiveEmployees = async (data: any) => {
 };
 
 export const CreateEmployeeAccount = async (data: any) => {
+    console.log(data);
     try {
         const response = await axiosInstance.post(`/auth/register`, data);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};
+
+export const EditUserProfile = async (userProfile: any) => {
+    const { employeeID, data } = userProfile;
+    try {
+        const response = await axiosInstance.put(`/employee/edit-profile/${employeeID}`, data);
         return response.data;
     } catch (error) {
         console.error('Request error:', error);

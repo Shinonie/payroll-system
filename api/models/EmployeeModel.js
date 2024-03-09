@@ -5,7 +5,14 @@ const EmployeeSchema = new mongoose.Schema(
   {
     _id: { type: String, required: true },
     controlNumber: { type: String, required: true, unique: true },
-    fullname: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    middleName: { type: String, required: true },
+    SSSLoan: { type: Number },
+    PagibigLoan: { type: Number },
+    hourlyRate: { type: Number, required: true },
+    allowance: { type: Number },
+    incentives: { type: Number },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     birthday: { type: String, required: true },
@@ -20,6 +27,12 @@ const EmployeeSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+EmployeeSchema.virtual("fullname").get(function () {
+  return `${this.firstName} ${this.middleName} ${this.lastName}`;
+});
+
+EmployeeSchema.set("toJSON", { virtuals: true });
 
 const Employee = mongoose.model("Employee", EmployeeSchema);
 

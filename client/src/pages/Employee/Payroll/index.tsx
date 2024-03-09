@@ -33,7 +33,9 @@ const Payroll = () => {
 
     useEffect(() => {
         if (data) {
-            const filtered = data.filter((item: any) => item?.payroll?.dateRange === selectedValue);
+            const filtered = data.filter(
+                (item: any) => item?.payroll?.dateCreated === selectedValue
+            );
 
             setFilteredPayroll(filtered);
 
@@ -74,20 +76,15 @@ const Payroll = () => {
                         Payroll ID: # {filteredPayroll[0]?.payroll?._id}
                     </h1>
                     <h1 className="font-semibold flex items-center flex-wrap gap-5">
-                        <span>PERIOD: </span>
+                        <span>Payroll Created: </span>
                         <Select onValueChange={(e) => setSelectedValue(e)}>
                             <SelectTrigger className="w-[300px]">
                                 <SelectValue placeholder="Select Date" />
                             </SelectTrigger>
                             <SelectContent>
                                 {data?.map((item: any, index: number) => {
-                                    const [startDateString, endDateString] =
-                                        item?.payroll?.dateRange.split(' ');
-                                    console.log(startDateString);
-                                    const startDate = new Date(startDateString);
-                                    const endDate = new Date(endDateString);
-
-                                    const formattedStartDate = startDate.toLocaleDateString(
+                                    const createdAtDate = new Date(item?.payroll?.dateCreated);
+                                    const formattedDate = createdAtDate.toLocaleDateString(
                                         'en-US',
                                         {
                                             month: 'long',
@@ -95,15 +92,10 @@ const Payroll = () => {
                                             year: 'numeric'
                                         }
                                     );
-                                    const formattedEndDate = endDate.toLocaleDateString('en-US', {
-                                        month: 'long',
-                                        day: 'numeric',
-                                        year: 'numeric'
-                                    });
 
                                     return (
-                                        <SelectItem value={item?.payroll?.dateRange} key={index}>
-                                            {`${formattedStartDate} - ${formattedEndDate}`}
+                                        <SelectItem value={item?.payroll?.dateCreated} key={index}>
+                                            {formattedDate}
                                         </SelectItem>
                                     );
                                 })}
@@ -123,6 +115,10 @@ const Payroll = () => {
                         <h1>Net Pay: &#8369; {filteredPayroll[0]?.payroll?.totalNetPay}</h1>
                         <h1>Days Working: {filteredPayroll[0]?.payroll?.totalDaysPresent}</h1>
                         <h1>Overtime Hours: {filteredPayroll[0]?.payroll?.overtimeHours}</h1>
+                        <h1>
+                            Payroll Period:{' '}
+                            {`${filteredPayroll[0]?.payroll?.dateRange.split(' ')[0].split('T')[0]} to ${filteredPayroll[0]?.payroll?.dateRange.split(' ')[1].split('T')[0]}`}
+                        </h1>
                     </div>
                 </div>
             </div>

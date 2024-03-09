@@ -27,6 +27,7 @@ const Attendances = () => {
                     timeIn: entry?.time?.timeIn,
                     timeOut: entry?.time?.timeOut,
                     payrollStatus: entry?.payrollStatus,
+                    adjustment: entry?.adjustment,
                     _id: entry?._id
                 }))}
                 filter="date"

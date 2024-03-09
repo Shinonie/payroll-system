@@ -218,7 +218,7 @@ export const columns = [
                 });
             }
 
-            if (data.payrollStatus) {
+            if (data.payrollStatus || data.adjustment) {
                 return null;
             }
 
