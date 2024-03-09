@@ -50,3 +50,13 @@ export const GetPayrollPreview = async (data: any) => {
         throw error;
     }
 };
+
+export const CreateBulkPayroll = async () => {
+    try {
+        const response = await axiosInstance.get(`/payroll/payroll/bulk`);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};

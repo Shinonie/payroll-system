@@ -10,6 +10,7 @@ import {
   PagIbigContribution,
   IncomeTaxContribution,
 } from "../utils/TaxCalculator.js";
+import { createPayrollData } from "../utils/GenrateBulkPayroll.js";
 
 const createPayroll = async (req, res) => {
   const { employeeID } = req.body;
@@ -573,6 +574,40 @@ const PayrollRelease = async (req, res) => {
   }
 };
 
+const CreateBulkPayroll = async (req, res) => {
+  try {
+    const employeeIDs = await Employee.distinct("controlNumber");
+
+    const payrollPromises = employeeIDs.map(async (employeeID) => {
+      try {
+        const payrollData = await createPayrollData(employeeID);
+        return payrollData;
+      } catch (error) {
+        console.error(`Error processing payroll for employeeID: ${employeeID}`);
+        console.error(error);
+        return null;
+      }
+    });
+
+    const payrollResults = await Promise.all(payrollPromises);
+
+    const validPayrolls = payrollResults.filter((payroll) => payroll !== null);
+
+    if (validPayrolls.length === 0) {
+      return res.status(404).json({
+        message: "No payroll found for all employees",
+      });
+    }
+
+    res.status(201).json({
+      message: "Bulk payroll created successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export {
   createPayroll,
   createPayrollPreview,
@@ -581,4 +616,5 @@ export {
   deletePayroll,
   getAllPayrolls,
   PayrollRelease,
+  CreateBulkPayroll,
 };

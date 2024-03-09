@@ -9,10 +9,12 @@ import {
   getAllPayrolls,
   PayrollRelease,
   createPayrollPreview,
+  CreateBulkPayroll,
 } from "../controllers/PayrollController.js";
 
 router.post("/payroll", createPayroll);
 router.get("/payroll", getAllPayrolls);
+router.post("/payroll/bulk", CreateBulkPayroll);
 router.put("/payroll/:employeeID", PayrollRelease);
 router.get("/payroll/:employeeID", getPayrollByEmployee);
 router.get("/payroll/preview/:employeeID", createPayrollPreview);
