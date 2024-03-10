@@ -4,6 +4,7 @@ import { GetAllPayroll } from '@/api/services/admin/Payroll';
 import { useQuery } from '@tanstack/react-query';
 import BulkPaySlip from '@/components/BulkPayroll';
 import { useEffect, useState } from 'react';
+import GenerateReport from '@/components/Report';
 
 const PayrollAdmin = () => {
     const { isLoading, data } = useQuery({
@@ -48,9 +49,12 @@ const PayrollAdmin = () => {
 
     return (
         <div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-semibold">EMPLOYEES PAYROLL</h1>
-                <BulkPaySlip data={templateDataArray} />
+                <div className="flex gap-5">
+                    <GenerateReport data={data} />
+                    <BulkPaySlip data={templateDataArray} />
+                </div>
             </div>
             <DataTable data={data} columns={columns} filter="fullname" />
         </div>
