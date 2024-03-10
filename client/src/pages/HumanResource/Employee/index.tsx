@@ -18,7 +18,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
-import ExportPdfComponent from './ExportPdfComponent';
+
 
 const EmployeeHR = () => {
     const { isLoading, data } = useQuery({
@@ -30,8 +30,8 @@ const EmployeeHR = () => {
         mutationFn: CreateBulkPayroll,
         onSuccess: () => {
             toast({
-                title: 'Leave',
-                description: 'Leave successfully approve'
+                title: 'Bulk Payroll',
+                description: 'Payroll successfully created'
             });
         },
         onError: (err: any) => {
