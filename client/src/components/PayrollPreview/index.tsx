@@ -54,7 +54,7 @@ const PayrollPreview = () => {
 
     useEffect(() => {
         if (isError) {
-            navigate('/admin');
+            navigate(-1);
             toast({
                 variant: 'destructive',
                 title: 'Payroll',

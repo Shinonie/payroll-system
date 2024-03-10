@@ -3,6 +3,11 @@ import { leaveTypeEnum, statusEnum } from "../constant/enums.js";
 
 const leavesSchema = new mongoose.Schema(
   {
+    _id: {
+      type: String,
+      default: () => `LI-${Math.floor(Date.now() / 1000)}`,
+      immutable: true,
+    },
     employeeID: {
       type: String,
       ref: "Employee",

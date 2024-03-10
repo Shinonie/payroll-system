@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const payrollSchema = new mongoose.Schema(
   {
+    _id: {
+      type: String,
+      default: () => `PI-${Math.floor(Date.now() / 1000)}`,
+      immutable: true,
+    },
     employeeID: {
       type: String,
       ref: "Employee",
