@@ -31,18 +31,10 @@ import { useState } from 'react';
 
 export const columns = [
     {
-        accessorKey: 'createdAt',
-        accessorFn: (row: any) => row?.payroll?.createdAt,
+        accessorKey: '_id',
+        accessorFn: (row: any) => row?.payroll?._id,
         header: 'ID',
-        cell: ({ row }: any) => (
-            <div className="capitalize">
-                {new Date(row.getValue('createdAt')).toLocaleDateString('en-US', {
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric'
-                })}
-            </div>
-        )
+        cell: ({ row }: any) => <div className="capitalize">{row.getValue('_id')}</div>
     },
     {
         accessorKey: 'fullname',

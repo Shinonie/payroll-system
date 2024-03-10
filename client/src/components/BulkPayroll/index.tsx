@@ -1,9 +1,34 @@
 import { useState } from 'react';
 import { ExportSdkClient } from '@exportsdk/client';
-import { PDFDocument } from 'pdf-lib'; // Import PDFDocument from 'pdf-lib'
+import { PDFDocument } from 'pdf-lib';
+import { Button } from '../ui/button';
+import { ReceiptText } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { UpdatePayrollStatus } from '@/api/services/admin/Payroll';
 
-const ExportPdfComponent = ({ data }: any) => {
+const BulkPaySlip = ({ data }: any) => {
     const [loading, setLoading] = useState(false);
+
+    const queryClient = useQueryClient();
+
+    const { mutate } = useMutation({
+        mutationFn: UpdatePayrollStatus,
+        onMutate: () => {
+            setLoading(true);
+            toast({
+                title: 'PAYROLL',
+                description: 'Payroll Slip is downloading...'
+            });
+        },
+        onSuccess: () => {
+            renderAndCombinePdf();
+        },
+        onError: (error) => {
+            console.error('Mutation failed:', error);
+            setLoading(false);
+        }
+    });
 
     const renderAndCombinePdf = async () => {
         setLoading(true);
@@ -14,11 +39,18 @@ const ExportPdfComponent = ({ data }: any) => {
             const combinedPdfBytes = await combinePdfs(data, client, templateId);
 
             const binary = arrayBufferToBase64(combinedPdfBytes);
-            downloadPdf(binary, 'combined_pdf.pdf');
+            downloadPdf(binary, 'Employees Payslip.pdf');
         } catch (error) {
             console.error('Error rendering PDF:', error);
         } finally {
             setLoading(false);
+
+            queryClient.invalidateQueries({ queryKey: ['payrolls'] });
+
+            toast({
+                title: 'Payslip',
+                description: 'Payslip successfully created'
+            });
         }
     };
 
@@ -70,14 +102,37 @@ const ExportPdfComponent = ({ data }: any) => {
         return new Blob([bytes], { type: 'application/pdf' });
     }
 
+    const handleGeneratePayslips = () => {
+        try {
+            if (data.length === 0) {
+                toast({
+                    variant: 'destructive',
+                    title: 'Payslips',
+                    description: 'Payroll Slip is unavailable'
+                });
+            }
+            for (const item of data) {
+                mutate({
+                    employeeID: item.employeeID._id,
+                    payrollID: item.payrollID
+                });
+            }
+        } catch (error) {
+            console.error('Error generating payslips:', error);
+        }
+    };
+
     return (
         <div>
-            <button onClick={renderAndCombinePdf} disabled={loading}>
-                Generate and Combine PDF
-            </button>
-            {loading && <p>Loading...</p>}
+            <Button
+                className="w-full text-white hover:bg-primary-foreground"
+                onClick={handleGeneratePayslips}
+                disabled={loading || data.length === 0}>
+                <ReceiptText className="mr-2" />
+                {loading ? <p>Loading...</p> : 'Generate All Payslip'}
+            </Button>
         </div>
     );
 };
 
-export default ExportPdfComponent;
+export default BulkPaySlip;
