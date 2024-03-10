@@ -174,10 +174,12 @@ export const columns = [
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                            <Link to={`/admin/attendance/${data._id}`}>View Attendance</Link>
+                            <Link to={`/human-resource/attendance/${data._id}`}>
+                                View Attendance
+                            </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                            <Link to={`/admin/schedule/${data._id}`}>View Schedules</Link>
+                            <Link to={`/human-resource/schedule/${data._id}`}>View Schedules</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                             <AlertDialog>
