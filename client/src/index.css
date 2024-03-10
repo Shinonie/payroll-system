@@ -74,3 +74,16 @@
         @apply bg-background text-foreground;
     }
 }
+.rdp [aria-hidden='true'] {
+    @apply hidden;
+}
+.rdp-caption_dropdowns {
+    display: flex;
+}
+.rdp-vhidden {
+    @apply hidden;
+}
+
+select::-webkit-scrollbar {
+    display: none;
+}

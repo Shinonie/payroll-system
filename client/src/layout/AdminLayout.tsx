@@ -20,7 +20,7 @@ const navLinks = [
     { to: 'payrolls', icon: <Wallet />, label: 'PAYROLLS' },
     { to: 'adjustments', icon: <SlidersHorizontal />, label: 'ADJUSTMENTS' },
     { to: 'leaves', icon: <CalendarClock />, label: 'EMPLOYEE LEAVES' },
-    { to: 'taxes', icon: <FilePenLine />, label: 'EDIT TAXES' },
+    { to: 'taxes', icon: <FilePenLine />, label: 'EDIT CONTRIBUTION' },
     { to: 'archive', icon: <PackageOpen />, label: 'ARCHIVE ACCOUNT' }
 ];
 

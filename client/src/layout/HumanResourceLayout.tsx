@@ -10,7 +10,7 @@ const navLinks = [
     { to: 'employees', icon: <Users />, label: 'EMPLOYEES' },
     { to: 'payrolls', icon: <Wallet />, label: 'PAYROLLS' },
     { to: 'adjustments', icon: <SlidersHorizontal />, label: 'ADJUSTMENTS' },
-    { to: 'taxes', icon: <FilePenLine />, label: 'EDIT TAXES' },
+    { to: 'taxes', icon: <FilePenLine />, label: 'EDIT CONTRIBUTION' },
     { to: 'leaves', icon: <CalendarClock />, label: 'EMPLOYEE LEAVES' }
 ];
 

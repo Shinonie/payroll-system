@@ -81,7 +81,7 @@ export const columns = [
         cell: ({ row }: any) => (
             <div
                 className={`capitalize rounded-xl text-center ${row.original.payroll?.status ? 'bg-green-200 text-green-700' : 'bg-orange-200 text-orange-700'}`}>
-                {row.original.payroll?.status ? 'PAID' : 'PENDING '}
+                {row.original.payroll?.status ? 'RELEASED' : 'PROCESSING'}
             </div>
         )
     },
