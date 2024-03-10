@@ -19,6 +19,7 @@ import {
     AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 
+
 const EmployeeHR = () => {
     const { isLoading, data } = useQuery({
         queryFn: GetAllEmployees,
@@ -84,5 +85,4 @@ const EmployeeHR = () => {
         </div>
     );
 };
-
 export default EmployeeHR;
