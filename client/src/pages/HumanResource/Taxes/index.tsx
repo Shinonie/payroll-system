@@ -77,7 +77,7 @@ const Taxes = () => {
                         <div className="grid max-w-2xl mx-auto">
                             <div className="flex flex-col gap-5">
                                 <h2 className="text-xl md:text-3xl font-bold max-sm:mb-2">
-                                    TAXES / CONTRIBUTION
+                                    CONTRIBUTIONS
                                 </h2>
                                 <div className="text-white">
                                     <h2 className="font-bold max-sm:mb-2">
