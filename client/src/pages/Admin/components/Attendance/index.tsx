@@ -2,18 +2,31 @@ import { DataTable } from '@/components/DataTable';
 import { columns } from './columns';
 import { useQuery } from '@tanstack/react-query';
 import { GetAttendance } from '@/api/services/admin/Attendance';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from '@/components/ui/use-toast';
+import { useEffect } from 'react';
 
 const Attendances = () => {
     const { id } = useParams();
-
-    const { isLoading, data } = useQuery({
+    const navigate = useNavigate();
+    const { isLoading, data, isError } = useQuery({
         queryFn: () => GetAttendance(id),
-        queryKey: ['attendance']
+        queryKey: [`attendance-${id}`]
     });
 
-    if (isLoading) {
-        return <div>LOADING</div>;
+    useEffect(() => {
+        if (isError) {
+            navigate(-1);
+            toast({
+                variant: 'destructive',
+                title: 'Attendance',
+                description: 'Attendance is not available or no present attendance.'
+            });
+        }
+    }, [isError]);
+
+    if (isLoading || !data) {
+        return <div>Loading</div>;
     }
 
     return (
