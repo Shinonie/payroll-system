@@ -2,6 +2,7 @@ import Employee from "../models/EmployeeModel.js";
 import bcrypt from "bcryptjs";
 import { userTypeEnum } from "../constant/enums.js";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
 // REGISTER
 const register = async (req, res) => {
@@ -25,12 +26,10 @@ const register = async (req, res) => {
   } = req.body;
 
   try {
-    // Check if the provided user type is valid
     if (!userTypeEnum.includes(userType)) {
       return res.status(400).json({ message: "Invalid user type" });
     }
 
-    // Check if an employee with the same email already exists
     const existingEmployee = await Employee.findOne({ email });
 
     const existingControlNumberEmployee = await Employee.findOne({
@@ -48,7 +47,6 @@ const register = async (req, res) => {
         .json({ message: "Employee with this email already exists" });
     }
 
-    // Hash the password before saving it to the database
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newEmployee = new Employee({
@@ -71,10 +69,35 @@ const register = async (req, res) => {
       userType,
     });
 
-    await newEmployee.save();
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      secure: false,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
 
-    res.status(201).json({
-      message: "Employee account created successfully",
+    const emailData = {
+      from: `ALPHA STEEL <${process.env.EMAIL}>`,
+      to: email,
+      subject: "Acceptance Email",
+      html: req.emailTemplate,
+    };
+
+    transporter.sendMail(emailData, async (error, info) => {
+      if (error) {
+        console.log("Error sending email: " + error);
+        res.status(500).json({ error: "Failed to send email" });
+      } else {
+        await newEmployee.save();
+        res.status(201).json({
+          message: "Employee account created successfully",
+        });
+      }
     });
   } catch (error) {
     res.status(500).json({
