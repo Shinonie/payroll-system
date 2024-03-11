@@ -7,7 +7,7 @@ const EmployeeSchema = new mongoose.Schema(
     controlNumber: { type: String, required: true, unique: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    middleName: { type: String, required: true },
+    middleName: { type: String },
     SSSLoan: { type: Number },
     PagibigLoan: { type: Number },
     hourlyRate: { type: Number, required: true },

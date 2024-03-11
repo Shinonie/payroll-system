@@ -5,6 +5,7 @@ import { GetAttendance } from '@/api/services/hr/Attendance';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from '@/components/ui/use-toast';
 import { useEffect } from 'react';
+import Preloader from '@/components/Preloader';
 
 const Attendances = () => {
     const { id } = useParams();
@@ -26,7 +27,7 @@ const Attendances = () => {
     }, [isError]);
 
     if (isLoading || !data) {
-        return <div>Loading</div>;
+        return <Preloader />;
     }
 
     return (

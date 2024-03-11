@@ -2,6 +2,7 @@ import { DataTable } from '@/components/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { columns } from './columns';
 import { GetAllAdjustment } from '@/api/services/hr/Adjustment';
+import Preloader from '@/components/Preloader';
 
 const AdjustmentHR = () => {
     const { isLoading, data } = useQuery({
@@ -10,8 +11,9 @@ const AdjustmentHR = () => {
     });
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Preloader />;
     }
+
     return (
         <div>
             <div className="flex justify-between">

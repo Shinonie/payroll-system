@@ -2,6 +2,7 @@ import { DataTable } from '@/components/DataTable';
 import { columns } from './columns';
 import { useQuery } from '@tanstack/react-query';
 import { GetAllArchiveEmployees } from '@/api/services/admin/Employee';
+import Preloader from '@/components/Preloader';
 
 const Archive = () => {
     const { isLoading, data } = useQuery({
@@ -10,9 +11,8 @@ const Archive = () => {
     });
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Preloader />;
     }
-
     return (
         <div>
             <div className="flex justify-between">

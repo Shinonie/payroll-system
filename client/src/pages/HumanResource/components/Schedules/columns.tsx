@@ -190,7 +190,7 @@ export const columns = [
                             <Dialog open={open} onOpenChange={setOpen}>
                                 <DialogTrigger asChild>
                                     <Button variant="outline" onClick={handleDialogButtonClick}>
-                                        Edit Attendance
+                                        Edit Schedule
                                     </Button>
                                 </DialogTrigger>
                                 <DialogContent
@@ -201,10 +201,10 @@ export const columns = [
                                     onKeyDown={handleDialogContentKeyDown}
                                     onClick={handleDialogContentClick}>
                                     <DialogHeader>
-                                        <DialogTitle>Edit Attendance</DialogTitle>
+                                        <DialogTitle>Edit Schedule</DialogTitle>
                                         <DialogDescription className="text-primary">
-                                            Make changes to employee attendance here. Click save
-                                            when you're done.
+                                            Make changes to employee schedule here. Click save when
+                                            you're done.
                                         </DialogDescription>
                                     </DialogHeader>
                                     <Form {...form}>

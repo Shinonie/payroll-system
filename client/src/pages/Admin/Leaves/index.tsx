@@ -2,6 +2,7 @@ import { DataTable } from '@/components/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { columns } from './columns';
 import { GetAllLeave } from '@/api/services/admin/Leaves';
+import Preloader from '@/components/Preloader';
 
 const LeavesAdmin = () => {
     const { isLoading, data } = useQuery({
@@ -10,7 +11,7 @@ const LeavesAdmin = () => {
     });
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Preloader />;
     }
 
     const pendingData = data.filter((item: any) => item.status === 'PENDING');

@@ -180,8 +180,8 @@ export const columns = [
 
                     setTimeout(() => {
                         toast({
-                            title: 'Update Attendance',
-                            description: 'Attendance successfully updated'
+                            title: 'PAYROLL',
+                            description: 'Payroll Slip successfully downloaded'
                         });
                         setLoading(false);
                     }, 5000);
