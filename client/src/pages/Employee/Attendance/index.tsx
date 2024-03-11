@@ -4,17 +4,18 @@ import { useUserStore } from '@/store/useUserStore';
 import { useQuery } from '@tanstack/react-query';
 import { DataTable } from '@/components/DataTable';
 import { columns } from './columns';
+import Preloader from '@/components/Preloader';
+
 const Attendance = () => {
     const userId = useUserStore().userId;
 
-    const { data } = useQuery({
-        queryFn: () => GetUserAttendance(userId),
+    const { data, error, isLoading }: any = useQuery({
+        queryFn: async () => GetUserAttendance(userId),
         queryKey: ['attendance']
     });
 
     const [haveError, setHaveError] = useState(false);
 
-    console.log(data);
     useEffect(() => {
         // Check if any item in attendanceData has null values
         const hasNullValues = data?.some(
@@ -29,12 +30,22 @@ const Attendance = () => {
         );
 
         // Set haveError state based on the presence of null values
-        setHaveError(hasNullValues);
-    }, [data]);
+        setHaveError(hasNullValues || !!error);
+    }, [data, error]);
 
-    if (!data) {
-        return <div>Loading</div>;
+    if (isLoading) {
+        return <Preloader />;
     }
+
+    if (error || error?.status === 404) {
+        // Handle error here, for example:
+        return (
+            <div className="flex justify-center items-center w-full h-screen">
+                <h1 className="text-4xl font-bold">No Attendance</h1>
+            </div>
+        );
+    }
+
     return (
         <div className="w-full p-10">
             <div className="mb-10">

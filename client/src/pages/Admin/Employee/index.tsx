@@ -18,6 +18,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
+import Preloader from '@/components/Preloader';
 
 const EmployeeAdmin = () => {
     const { isLoading, data } = useQuery({
@@ -43,7 +44,7 @@ const EmployeeAdmin = () => {
     });
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Preloader />;
     }
 
     return (

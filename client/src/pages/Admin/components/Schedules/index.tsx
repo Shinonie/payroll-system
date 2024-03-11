@@ -31,6 +31,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { CreateSchedule } from '@/api/services/admin/Schedules';
+import Preloader from '@/components/Preloader';
 
 const FormSchema = z.object({
     date: z.string().optional(),
@@ -103,9 +104,8 @@ const ScheduleAdnin = () => {
     });
 
     if (isLoading) {
-        return <div>LOADING</div>;
+        return <Preloader />;
     }
-
     return (
         <div>
             <div className="flex justify-between">

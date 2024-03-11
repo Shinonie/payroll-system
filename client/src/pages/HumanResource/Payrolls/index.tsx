@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import BulkPaySlip from '@/components/BulkPayroll';
 import GenerateReport from '@/components/Report';
+import Preloader from '@/components/Preloader';
 
 const PayrollHR = () => {
     const { isLoading, data } = useQuery({
@@ -22,7 +23,7 @@ const PayrollHR = () => {
     }, [data]);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Preloader />;
     }
 
     const templateDataArray = (filteredData as any[]).map((item) => ({

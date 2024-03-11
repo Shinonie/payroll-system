@@ -2,6 +2,7 @@ import { DataTable } from '@/components/DataTable';
 import { useQuery } from '@tanstack/react-query';
 import { columns } from './columns';
 import { GetAllAdjustment } from '@/api/services/admin/Adjustment';
+import Preloader from '@/components/Preloader';
 
 const AdjustmentAdmin = () => {
     const { isLoading, data } = useQuery({
@@ -10,7 +11,7 @@ const AdjustmentAdmin = () => {
     });
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <Preloader />;
     }
 
     return (

@@ -226,38 +226,17 @@ const Profile = () => {
                                                     />
                                                 </div>
                                                 <DialogFooter>
-                                                    <Button type="submit">Save changes</Button>
+                                                    <Button
+                                                        type="submit"
+                                                        className=" text-white hover:bg-primary-foreground">
+                                                        Save changes
+                                                    </Button>
                                                 </DialogFooter>
                                             </form>
                                         </Form>
                                     </DialogContent>
                                 </Dialog>
                             </div>
-                            {/* <div className="flex flex-col items-center space-y-5 sm:flex-row sm:space-y-0">
-                                <div className="mt-2">
-                                    <img
-                                        className="object-cover w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
-                                        src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhY2V8ZW58MHx8MHx8fDA%3D&auto=htmlFormat&fit=crop&w=500&q=60"
-                                        alt="Bordered avatar"
-                                    />
-                                    <div>
-                                        <h1>ID</h1>
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col space-y-5 sm:ml-8">
-                                    <button
-                                        type="button"
-                                        className="py-3.5 px-7 text-base font-medium text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-indigo-900 focus:z-10 focus:ring-4 focus:ring-indigo-200 ">
-                                        Change picture
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="py-3.5 px-7 text-base font-medium text-indigo-900 focus:outline-none bg-white rounded-lg border border-indigo-200 hover:bg-indigo-100 hover:text-[#202142] focus:z-10 focus:ring-4 focus:ring-indigo-200 ">
-                                        Delete picture
-                                    </button>
-                                </div>
-                            </div> */}
                             <Form {...form}>
                                 <form onSubmit={form.handleSubmit(onSubmit)}>
                                     <div className="flex flex-col items-center w-full mb-2 space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0 sm:mb-6 mt-5">

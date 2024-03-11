@@ -31,7 +31,7 @@ const EmployeeSchema = z.object({
     controlNumber: z.string().min(1, { message: 'This field is required' }),
     firstName: z.string().min(1, { message: 'This field is required' }),
     lastName: z.string().min(1, { message: 'This field is required' }),
-    middleName: z.string().min(1, { message: 'This field is required' }),
+    middleName: z.string(),
     email: z.string().min(1, { message: 'This field is required' }),
     birthday: z.string().datetime(),
     gender: z.string().min(1, { message: 'This field is required' }),
@@ -59,6 +59,7 @@ function generateRandomPassword() {
 const CreateEmployee = () => {
     const { toast } = useToast();
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const queryClient = useQueryClient();
 
@@ -91,6 +92,9 @@ const CreateEmployee = () => {
 
     const { mutate } = useMutation({
         mutationFn: CreateEmployeeAccount,
+        onSettled: () => {
+            setIsLoading(true);
+        },
         onSuccess: () => {
             toast({
                 title: 'Employee Account',
@@ -429,9 +433,6 @@ const CreateEmployee = () => {
                                                                 <SelectItem value="female">
                                                                     Female
                                                                 </SelectItem>
-                                                                <SelectItem value="lgbtqia+">
-                                                                    LGBQIA+
-                                                                </SelectItem>
                                                             </SelectContent>
                                                         </Select>
                                                         {errors.gender && (
@@ -494,9 +495,12 @@ const CreateEmployee = () => {
                                                                 className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
                                                                 placeholder="PagibigLoan"
                                                                 onChange={(e) => {
-                                                                    const parsedValue = parseFloat(
-                                                                        e.target.value
-                                                                    );
+                                                                    const inputValue =
+                                                                        e.target.value;
+                                                                    const parsedValue =
+                                                                        inputValue.trim() !== ''
+                                                                            ? parseFloat(inputValue)
+                                                                            : '';
                                                                     field.onChange(parsedValue);
                                                                 }}
                                                             />
@@ -529,9 +533,12 @@ const CreateEmployee = () => {
                                                                 className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
                                                                 placeholder="SSSLoan"
                                                                 onChange={(e) => {
-                                                                    const parsedValue = parseFloat(
-                                                                        e.target.value
-                                                                    );
+                                                                    const inputValue =
+                                                                        e.target.value;
+                                                                    const parsedValue =
+                                                                        inputValue.trim() !== ''
+                                                                            ? parseFloat(inputValue)
+                                                                            : '0';
                                                                     field.onChange(parsedValue);
                                                                 }}
                                                             />
@@ -564,9 +571,12 @@ const CreateEmployee = () => {
                                                                 className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
                                                                 placeholder="incentives"
                                                                 onChange={(e) => {
-                                                                    const parsedValue = parseFloat(
-                                                                        e.target.value
-                                                                    );
+                                                                    const inputValue =
+                                                                        e.target.value;
+                                                                    const parsedValue =
+                                                                        inputValue.trim() !== ''
+                                                                            ? parseFloat(inputValue)
+                                                                            : '0';
                                                                     field.onChange(parsedValue);
                                                                 }}
                                                             />
@@ -601,9 +611,12 @@ const CreateEmployee = () => {
                                                                 className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
                                                                 placeholder="allowance"
                                                                 onChange={(e) => {
-                                                                    const parsedValue = parseFloat(
-                                                                        e.target.value
-                                                                    );
+                                                                    const inputValue =
+                                                                        e.target.value;
+                                                                    const parsedValue =
+                                                                        inputValue.trim() !== ''
+                                                                            ? parseFloat(inputValue)
+                                                                            : '0';
                                                                     field.onChange(parsedValue);
                                                                 }}
                                                             />
@@ -636,9 +649,12 @@ const CreateEmployee = () => {
                                                                 className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
                                                                 placeholder="hourlyRate"
                                                                 onChange={(e) => {
-                                                                    const parsedValue = parseFloat(
-                                                                        e.target.value
-                                                                    );
+                                                                    const inputValue =
+                                                                        e.target.value;
+                                                                    const parsedValue =
+                                                                        inputValue.trim() !== ''
+                                                                            ? parseFloat(inputValue)
+                                                                            : '0';
                                                                     field.onChange(parsedValue);
                                                                 }}
                                                             />
@@ -744,6 +760,7 @@ const CreateEmployee = () => {
                                     </div>
                                     <div className="flex justify-end">
                                         <Button
+                                            disabled={isLoading}
                                             type="submit"
                                             className="w-full text-white hover:bg-primary-foreground">
                                             Register Employee
