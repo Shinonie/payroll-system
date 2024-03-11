@@ -86,7 +86,7 @@ export function UploadAttendance() {
                         <Label htmlFor="fileInput">Choose File:</Label>
                         <Input
                             type="file"
-                            accept=".csv"
+                            accept=".txt"
                             name="file"
                             id="fileInput"
                             onChange={handleFileChange}

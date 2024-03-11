@@ -5,8 +5,9 @@ import { AttendanceStatusSetter } from "../utils/AttendanceStatusSetter.js";
 import { AttendanceTableSetter } from "../utils/AttendanceTableSetter.js";
 import Adjustment from "../models/AdjustmentModel.js";
 import { TimeCalculator } from "../utils/TimeCalculator.js";
-
+import txtToJSON from "txt-file-to-json";
 const upload = multer({ dest: "../uploads" });
+import fs from "fs";
 
 const uploadAttendanceCSV = async (req, res) => {
   try {
@@ -14,9 +15,31 @@ const uploadAttendanceCSV = async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    const csvFilePath = req.file.path;
+    const txtFilePath = req.file.path;
 
-    const jsonArray = await csvtojson().fromFile(csvFilePath);
+    const tsvData = fs.readFileSync(txtFilePath, "utf-8");
+
+    const lines = tsvData.trim().split("\n");
+
+    const headers = lines[0].split("\t").map((header) => header.trim());
+
+    lines.shift();
+
+    const jsonArray = lines.map((line) => {
+      const values = line.split("\t").map((value) => value.trim());
+      const dateAndTimeIndex = headers.indexOf("Time");
+      if (dateAndTimeIndex !== -1) {
+        values[dateAndTimeIndex] = values[dateAndTimeIndex].replace(
+          /\s+/g,
+          " "
+        );
+      }
+      const obj = {};
+      headers.forEach((header, index) => {
+        obj[header] = values[index];
+      });
+      return obj;
+    });
 
     const { formattedTable, errors } = await AttendanceTableSetter(jsonArray);
 
