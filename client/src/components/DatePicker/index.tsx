@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { CalendarIcon } from '@radix-ui/react-icons';
-import { addDays, format } from 'date-fns';
+import { addDays, format, isBefore, differenceInDays } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 
 import { cn } from '@/lib/utils';
@@ -10,22 +10,35 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 
 export function DatePickerWithRange({
     className,
-    onDateChange
+    onDateChange,
+    onNumberOfSelectedDatesChange // Callback to pass number of selected dates
 }: {
     className?: string;
     onDateChange: (date: DateRange) => void;
+    onNumberOfSelectedDatesChange: (num: number) => void; // Callback prop
 }) {
     const [date, setDate] = React.useState<DateRange | undefined>({
         from: new Date(),
-        to: addDays(new Date(), 20)
+        to: addDays(new Date(), 5)
     });
 
-    // Notify parent component about date change
+    const isDateDisabled = (day: Date) => isBefore(day, new Date());
+
+    const getNumberOfSelectedDates = (startDate: Date, endDate: Date) => {
+        const daysDifference = differenceInDays(endDate, startDate);
+        return daysDifference >= 0 ? daysDifference + 1 : 0;
+    };
+
     React.useEffect(() => {
         if (date !== undefined) {
             onDateChange(date);
+            if (date.from && date.to) {
+                const numSelectedDates = getNumberOfSelectedDates(date.from, date.to);
+                onNumberOfSelectedDatesChange(numSelectedDates); // Call callback with the number of selected dates
+            }
         }
-    }, [date, onDateChange]);
+    }, [date, onDateChange, onNumberOfSelectedDatesChange]);
+
     return (
         <div className={cn('grid gap-2', className)}>
             <Popover>
@@ -60,6 +73,7 @@ export function DatePickerWithRange({
                         selected={date}
                         onSelect={setDate}
                         numberOfMonths={2}
+                        disabled={isDateDisabled}
                     />
                 </PopoverContent>
             </Popover>
