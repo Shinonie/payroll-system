@@ -1,8 +1,7 @@
 import { parse, format } from "date-fns";
 
 const dateFormatISO = (dateString) => {
-  // Define the input and output date formats
-  const inputFormat = "M/dd/yyyy HH:mm";
+  const inputFormat = "yyyy-MM-dd HH:mm:ss";
 
   const parsedDate = parse(dateString, inputFormat, new Date());
 
