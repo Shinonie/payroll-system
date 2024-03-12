@@ -5,7 +5,7 @@ export const AttendanceStatusSetter = async (attendances) => {
     attendances.map(async (data) => {
       try {
         const schedules = await Schedule.find({
-          employeeID: data.employeeID,
+          biometricNumber: data.employeeID,
         });
 
         if (schedules.length === 0) {

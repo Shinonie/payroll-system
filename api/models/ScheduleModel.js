@@ -11,6 +11,7 @@ const ScheduleSchema = new mongoose.Schema(
       type: String,
       ref: "Employee",
     },
+    biometricNumber: { type: String, required: true },
     range: { type: String, required: true },
     date: { type: String, required: true },
     timeIn: { type: String, required: true },

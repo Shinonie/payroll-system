@@ -57,7 +57,7 @@ const PayrollHR = () => {
                     <BulkPaySlip data={templateDataArray} />
                 </div>
             </div>
-            <DataTable data={data} columns={columns} filter="fullname" />
+            <DataTable data={data} columns={columns} filter="_id" />
         </div>
     );
 };

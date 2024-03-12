@@ -178,7 +178,7 @@ const createPayroll = async (req, res) => {
 
     await Attendance.updateMany(
       {
-        employeeID,
+        employeeID: biometricNumber,
         payrollStatus: false,
       },
       { $set: { payrollStatus: true } }

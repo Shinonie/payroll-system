@@ -8,6 +8,7 @@ import { TimeCalculator } from "../utils/TimeCalculator.js";
 import txtToJSON from "txt-file-to-json";
 const upload = multer({ dest: "../uploads" });
 import fs from "fs";
+import Employee from "../models/EmployeeModel.js";
 
 const uploadAttendanceCSV = async (req, res) => {
   try {
@@ -65,7 +66,11 @@ const getAllAttendanceEmployee = async (req, res) => {
   try {
     const { employeeID } = req.params;
 
-    const attendanceRecords = await Attendance.find({ employeeID });
+    const employee = await Employee.findOne({ controlNumber: employeeID });
+
+    const attendanceRecords = await Attendance.find({
+      employeeID: employee.biometricNumber,
+    });
 
     if (attendanceRecords.length === 0) {
       return res
@@ -82,8 +87,11 @@ const getAllAttendanceEmployee = async (req, res) => {
 const GetAllUnpaidAttendance = async (req, res) => {
   try {
     const { employeeID } = req.params;
+
+    const employee = await Employee.findOne({ controlNumber: employeeID });
+
     const attendanceRecords = await Attendance.find({
-      employeeID,
+      employeeID: employee.biometricNumber,
       payrollStatus: false,
     });
 
