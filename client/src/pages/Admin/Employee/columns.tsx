@@ -51,6 +51,7 @@ const FormSchema = z.object({
     PagibigLoan: z.number().optional(),
     hourlyRate: z.number().optional(),
     incentives: z.number().optional(),
+    decemberMonthPay: z.number().optional(),
     allowance: z.number().optional()
 });
 
@@ -363,12 +364,20 @@ export const columns = [
                     PagibigLoan: data.PagibigLoan || 0,
                     hourlyRate: data.hourlyRate || 0,
                     incentives: data.incentives || 0,
+                    decemberMonthPay: data.decemberMonthPay || 0,
                     allowance: data.allowance || 0
                 }
             });
 
             function onSubmit(formData: z.infer<typeof FormSchema>) {
-                const { SSSLoan, PagibigLoan, hourlyRate, incentives, allowance } = formData;
+                const {
+                    SSSLoan,
+                    PagibigLoan,
+                    hourlyRate,
+                    incentives,
+                    allowance,
+                    decemberMonthPay
+                } = formData;
 
                 mutate({
                     employeeID: data.controlNumber,
@@ -377,6 +386,7 @@ export const columns = [
                         PagibigLoan,
                         hourlyRate,
                         incentives,
+                        decemberMonthPay,
                         allowance
                     }
                 });
@@ -397,7 +407,7 @@ export const columns = [
                             onInteractOutside={(e) => {
                                 e.preventDefault();
                             }}
-                            className="sm:max-w-[500px]"
+                            className="sm:max-w-[680px]"
                             onKeyDown={handleDialogContentKeyDown}
                             onClick={handleDialogContentClick}>
                             <DialogHeader>
@@ -535,6 +545,40 @@ export const columns = [
                                                 </FormItem>
                                             )}
                                         />
+                                    </div>
+                                    <div className="col-span-1">
+                                        <FormField
+                                            control={form.control}
+                                            name="decemberMonthPay"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>13th Month Pay</FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            type="number"
+                                                            placeholder="Enter here..."
+                                                            {...field}
+                                                            onChange={(e) => {
+                                                                const value = parseFloat(
+                                                                    e.target.value
+                                                                );
+
+                                                                field.onChange(value);
+                                                            }}
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <Button
+                                            onClick={() => {
+                                                const payable = data.hourlyRate * 8 * 26;
+                                                return form.setValue('decemberMonthPay', payable);
+                                            }}
+                                            type="button"
+                                            className="text-white hover:bg-accent mt-3">
+                                            Generate 13th Month Pay
+                                        </Button>
                                     </div>
 
                                     <DialogFooter className="col-span-3">

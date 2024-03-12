@@ -14,7 +14,7 @@ const generateEmailMiddleware = (req, res, next) => {
   const emailContent = {
     body: {
       greeting: `Hello ${firstName}`,
-      intro: `Congratulations, you are hired to our company. `,
+      intro: `Congratualation! You've been successfully added to our company's system.`,
       action: {
         instructions:
           "Please login your account here and change password immediately:",
@@ -23,7 +23,7 @@ const generateEmailMiddleware = (req, res, next) => {
           link: "http://localhost:4000/login",
         },
       },
-      outro: `Your email: ${email}, Your password: ${password}`,
+      outro: `Your Account is email: ${email} password: ${password}`,
     },
   };
   const emailTemplate = mailGenerator.generate(emailContent);

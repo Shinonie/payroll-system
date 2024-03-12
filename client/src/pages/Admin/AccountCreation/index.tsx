@@ -29,6 +29,7 @@ import { CreateEmployeeAccount } from '@/api/services/admin/Employee';
 
 const EmployeeSchema = z.object({
     controlNumber: z.string().min(1, { message: 'This field is required' }),
+    biometricNumber: z.string().min(1, { message: 'This field is required' }),
     firstName: z.string().min(1, { message: 'This field is required' }),
     lastName: z.string().min(1, { message: 'This field is required' }),
     middleName: z.string(),
@@ -70,6 +71,7 @@ const CreateEmployee = () => {
             lastName: '',
             middleName: '',
             controlNumber: '',
+            biometricNumber: '',
             email: '',
             password: '',
             birthday: '',
@@ -101,6 +103,7 @@ const CreateEmployee = () => {
                 description: 'Account is successfully created.'
             });
             reset();
+            setIsLoading(false);
             queryClient.invalidateQueries({ queryKey: ['employee'] });
         },
         onError: (data: any) => {
@@ -163,6 +166,32 @@ const CreateEmployee = () => {
                                                         {errors.controlNumber && (
                                                             <p className="text-red-500 text-sm mt-1">
                                                                 {errors.controlNumber.message}
+                                                            </p>
+                                                        )}
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        <div className="w-full">
+                                            <FormField
+                                                control={form.control}
+                                                name="biometricNumber"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <Label
+                                                            htmlFor="biometricNumber"
+                                                            className="block mb-2 text-sm font-medium text-indigo-900 dark:text-white">
+                                                            Biomentric Number
+                                                        </Label>
+                                                        <Input
+                                                            {...field}
+                                                            id="biometricNumber"
+                                                            className="bg-indigo-50 border border-indigo-300 text-indigo-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 "
+                                                            placeholder="ex. 1"
+                                                        />
+                                                        {errors.biometricNumber && (
+                                                            <p className="text-red-500 text-sm mt-1">
+                                                                {errors.biometricNumber.message}
                                                             </p>
                                                         )}
                                                     </FormItem>

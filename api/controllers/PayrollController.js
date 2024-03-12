@@ -17,11 +17,18 @@ const createPayroll = async (req, res) => {
   try {
     const employeeData = await Employee.findOne({ controlNumber: employeeID });
 
-    const { SSSLoan, PagibigLoan, hourlyRate, incentives, allowance } =
-      employeeData;
+    const {
+      SSSLoan,
+      PagibigLoan,
+      hourlyRate,
+      incentives,
+      allowance,
+      biometricNumber,
+      decemberMonthPay,
+    } = employeeData;
 
     const employeeAttendance = await Attendance.find({
-      employeeID,
+      employeeID: biometricNumber,
       adjustment: false,
       payrollStatus: false,
     });
@@ -128,7 +135,8 @@ const createPayroll = async (req, res) => {
       overtimePay +
       allowanceNumber +
       incentivesNumber +
-      totalAdjustmentPay;
+      totalAdjustmentPay +
+      decemberMonthPay;
 
     let totalNetPay;
     if (totalWorkHours >= 120) {
@@ -159,6 +167,7 @@ const createPayroll = async (req, res) => {
       totalHours: totalWorkHours,
       totalDeductions: totalWorkHours >= 120 ? totalDeductions._id : null,
       dateRange,
+      decemberMonthPay,
       dateCreated,
       ...(employeeAdjustment.length > 0 && { employeeAdjustment }),
       incentives,
@@ -253,10 +262,12 @@ const createPayrollPreview = async (req, res) => {
       incentives,
       allowance,
       fullname,
+      biometricNumber,
+      decemberMonthPay,
     } = employeeJson;
 
     const employeeAttendance = await Attendance.find({
-      employeeID,
+      employeeID: biometricNumber,
       adjustment: false,
       payrollStatus: false,
     });
@@ -407,6 +418,7 @@ const createPayrollPreview = async (req, res) => {
           : null,
       incentives,
       allowance,
+      decemberMonthPay,
       totalGrossPay: totalGrossPay,
       totalNetPay: totalNetPay,
     };
