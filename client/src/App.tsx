@@ -37,6 +37,7 @@ import Archive from '@/pages/Admin/Archive';
 import CreateEmployee from '@/pages/Admin/AccountCreation';
 import TaxesAdmin from '@/pages/Admin/Taxes';
 import PayrollPreview from '@/components/PayrollPreview';
+import PostViewPayroll from './components/PostViewPayroll';
 
 const router = createBrowserRouter([
     {
@@ -118,6 +119,10 @@ const router = createBrowserRouter([
                         element: <PayrollPreview />
                     },
                     {
+                        path: 'payroll/view/:id',
+                        element: <PostViewPayroll />
+                    },
+                    {
                         path: 'schedule/:id',
                         element: <ScheduleHR />
                     },
@@ -168,6 +173,10 @@ const router = createBrowserRouter([
                     {
                         path: 'payroll/:id',
                         element: <PayrollPreview />
+                    },
+                    {
+                        path: 'payroll/view/:id',
+                        element: <PostViewPayroll />
                     },
                     {
                         path: 'schedule/:id',
