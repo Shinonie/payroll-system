@@ -22,6 +22,7 @@ const payrollSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Deduction",
     },
+    decemberMonthPay: { type: Number },
     dateRange: { type: String, required: true },
     dateCreated: { type: String, required: true },
     incentives: { type: Number, default: 0 },

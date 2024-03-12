@@ -15,6 +15,7 @@ const register = async (req, res) => {
     password,
     birthday,
     gender,
+    biometricNumber,
     civilStatus,
     address,
     userType,
@@ -34,6 +35,7 @@ const register = async (req, res) => {
 
     const existingControlNumberEmployee = await Employee.findOne({
       controlNumber,
+      biometricNumber,
     });
     if (existingControlNumberEmployee) {
       return res
@@ -55,6 +57,7 @@ const register = async (req, res) => {
       firstName,
       lastName,
       middleName,
+      biometricNumber,
       email,
       password: hashedPassword,
       birthday,

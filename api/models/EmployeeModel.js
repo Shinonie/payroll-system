@@ -5,6 +5,7 @@ const EmployeeSchema = new mongoose.Schema(
   {
     _id: { type: String, required: true },
     controlNumber: { type: String, required: true, unique: true },
+    biometricNumber: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     middleName: { type: String },
@@ -13,6 +14,7 @@ const EmployeeSchema = new mongoose.Schema(
     hourlyRate: { type: Number, required: true },
     allowance: { type: Number },
     incentives: { type: Number },
+    decemberMonthPay: { type: Number, default: 0 },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     birthday: { type: String, required: true },
