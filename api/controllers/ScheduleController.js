@@ -1,28 +1,45 @@
 import Schedule from "../models/ScheduleModel.js";
+import Employee from "../models/EmployeeModel.js";
 
 const createSchedule = async (req, res) => {
   const scheduleArray = req.body;
 
   try {
-    const schedules = scheduleArray.map((schedule) => ({
-      employeeID: schedule.employeeID,
-      date: schedule.date,
-      timeIn: schedule.timeIn,
-      breakIn: schedule.breakIn,
-      breakOut: schedule.breakOut,
-      timeOut: schedule.timeOut,
-    }));
+    const schedules = scheduleArray.map(async (schedule) => {
+      try {
+        const employee = await Employee.findOne({
+          controlNumber: schedule.employeeID,
+        });
 
+        return {
+          employeeID: schedule.employeeID,
+          biometricNumber: employee.biometricNumber,
+          date: schedule.date,
+          timeIn: schedule.timeIn,
+          breakIn: schedule.breakIn,
+          breakOut: schedule.breakOut,
+          timeOut: schedule.timeOut,
+        };
+      } catch (error) {
+        // Handle errors here
+        console.error("Error finding employee:", error);
+        throw error;
+      }
+    });
+
+    const updatedSchedules = await Promise.all(schedules);
     const range =
-      schedules[0].date + " " + schedules[schedules.length - 1].date;
+      updatedSchedules[0].date +
+      " " +
+      updatedSchedules[schedules.length - 1].date;
 
-    for (const schedule of schedules) {
+    for (const schedule of updatedSchedules) {
       await Schedule.create({ ...schedule, range });
     }
 
     res.status(201).json({
       message: "Schedules created successfully",
-      schedules: schedules,
+      schedules: updatedSchedules,
     });
   } catch (error) {
     console.error(error);

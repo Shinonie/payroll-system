@@ -23,6 +23,7 @@ import {
     AlertDialogTrigger
 } from '../ui/alert-dialog';
 import { Button } from '../ui/button';
+import Preloader from '../Preloader';
 
 const PayrollPreview = () => {
     const { id } = useParams();
@@ -36,14 +37,6 @@ const PayrollPreview = () => {
                 description: 'Payroll successfully created'
             });
             navigate(-1);
-        },
-        onError: () => {
-            toast({
-                variant: 'destructive',
-                title: 'Payroll',
-                description:
-                    'Payroll is not available, due to existing payroll or no present attendance.'
-            });
         }
     });
 
@@ -57,15 +50,15 @@ const PayrollPreview = () => {
             navigate(-1);
             toast({
                 variant: 'destructive',
-                title: 'Payroll',
+                title: 'Payroll Preview',
                 description:
-                    'Payroll is not available, due to existing payroll or no present attendance.'
+                    'Payroll Preview is not available, due to no existing present attendance.'
             });
         }
     }, [isError]);
 
     if (isLoading || !data) {
-        return <div>Loading</div>;
+        return <Preloader />;
     }
 
     return (

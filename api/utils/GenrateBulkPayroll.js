@@ -15,11 +15,17 @@ export const createPayrollData = async (employeeID) => {
   try {
     const employeeData = await Employee.findOne({ controlNumber: employeeID });
 
-    const { SSSLoan, PagibigLoan, hourlyRate, incentives, allowance } =
-      employeeData;
+    const {
+      SSSLoan,
+      PagibigLoan,
+      hourlyRate,
+      incentives,
+      allowance,
+      biometricNumber,
+    } = employeeData;
 
     const employeeAttendance = await Attendance.find({
-      employeeID,
+      employeeID: biometricNumber,
       adjustment: false,
       payrollStatus: false,
     });
@@ -167,7 +173,7 @@ export const createPayrollData = async (employeeID) => {
 
     await Attendance.updateMany(
       {
-        employeeID,
+        employeeID: biometricNumber,
         payrollStatus: false,
       },
       { $set: { payrollStatus: true } }
