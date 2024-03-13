@@ -37,3 +37,13 @@ export const UploadAttendance = async (data: any) => {
         throw error;
     }
 };
+
+export const GetAttendanceReport = async () => {
+    try {
+        const response = await axiosInstance.get(`/attendance/attendances`);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};

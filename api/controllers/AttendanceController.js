@@ -84,6 +84,41 @@ const getAllAttendanceEmployee = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+const getAllAttendance = async (req, res) => {
+  try {
+    const attendanceRecords = await Attendance.find();
+
+    const populatedAttendance = await Promise.all(
+      attendanceRecords.map(async (attendanceRecord) => {
+        try {
+          const employee = await Employee.findOne({
+            biometricNumber: attendanceRecord.employeeID,
+          });
+
+          if (employee) {
+            const { fullname, employeeID } = employee;
+
+            return {
+              ...attendanceRecord.toObject(),
+              fullname,
+            };
+          } else {
+            return attendanceRecord;
+          }
+        } catch (error) {
+          console.error("Error while populating attendance:", error);
+          return attendanceRecord;
+        }
+      })
+    );
+
+    res.json(populatedAttendance);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 const GetAllUnpaidAttendance = async (req, res) => {
   try {
     const { employeeID } = req.params;
@@ -174,4 +209,5 @@ export {
   getAllAttendanceEmployee,
   updateAttendanceTime,
   GetAllUnpaidAttendance,
+  getAllAttendance,
 };
