@@ -143,4 +143,63 @@ const logout = (req, res) => {
   res.json({ message: "Logout successful" });
 };
 
-export { login, logout, register };
+// FORGOT PASSWORD
+const forgotPassword = (req, res) => {
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  const emailData = {
+    from: `ALPHA STEEL <${process.env.EMAIL}>`,
+    to: req.email,
+    subject: "Reset Password",
+    html: req.passwordRecover,
+  };
+
+  transporter.sendMail(emailData, async (error, info) => {
+    if (error) {
+      console.log("Error sending email: " + error);
+      res.status(500).json({ error: "Failed to send email" });
+    } else {
+      res.status(201).json({
+        message: "Email successfully sent",
+      });
+    }
+  });
+};
+
+const recoverAccount = (req, res) => {
+  const { id, token } = req.params;
+
+  console.log(id, token);
+  const { password } = req.body;
+
+  jwt.verify(token, "jwt_secret_key", (err, decoded) => {
+    if (err) {
+      return res.json({ Status: "Error with token" });
+    } else {
+      bcrypt
+        .hash(password, 10)
+
+        .then((hash) => {
+          Employee.findByIdAndUpdate({ _id: id }, { password: hash })
+
+            .then((u) => res.send({ Status: "Success" }))
+
+            .catch((err) => res.send({ Status: err }));
+        })
+
+        .catch((err) => res.send({ Status: err }));
+    }
+  });
+};
+
+export { login, logout, register, forgotPassword, recoverAccount };
