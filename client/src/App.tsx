@@ -39,6 +39,9 @@ import TaxesAdmin from '@/pages/Admin/Taxes';
 import PayrollPreview from '@/components/PayrollPreview';
 import PostViewPayroll from './components/PostViewPayroll';
 
+import AdminLandingPage from '@/components/LandingPage/Admin';
+import HRLandingPag from '@/components/LandingPage/HR';
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -104,7 +107,7 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: '',
-                        element: <EmployeeHR />
+                        element: <HRLandingPag />
                     },
                     {
                         path: 'employees',
@@ -160,7 +163,7 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: '',
-                        element: <EmployeeAdmin />
+                        element: <AdminLandingPage />
                     },
                     {
                         path: 'employees',
