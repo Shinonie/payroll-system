@@ -20,6 +20,15 @@ export const AttendanceStatusSetter = async (attendances) => {
         const scheduleTimeOut = new Date(schedules[0].timeOut);
         const scheduleBreakOut = new Date(schedules[0].breakOut);
 
+        if (
+          data.time.timeIn &&
+          data.time.timeOut === null &&
+          data.time.breakIn &&
+          data.time.breakOut === null
+        ) {
+          return { ...data, remarks: "HALFDAY" };
+        }
+
         if (!data.time.breakIn || !data.time.breakOut) {
           return { ...data, breakStatus: "ERROR" };
         }
@@ -30,15 +39,6 @@ export const AttendanceStatusSetter = async (attendances) => {
 
         if (!data.time.timeIn || !data.time.timeOut) {
           return { ...data, status: "ERROR" };
-        }
-
-        if (
-          data.time.timeIn &&
-          !data.time.timeOut &&
-          data.time.breakIn &&
-          !data.time.breakOut
-        ) {
-          return { ...data, status: "HALFDAY" };
         }
 
         let breakStatus =

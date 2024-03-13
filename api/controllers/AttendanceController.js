@@ -52,10 +52,9 @@ const uploadAttendanceCSV = async (req, res) => {
 
     const formattedData = await AttendanceStatusSetter(formattedTable);
     await Attendance.insertMany(formattedData);
-
     res
       .status(200)
-      .json({ message: "File uploaded successfully", formattedTable });
+      .json({ message: "File uploaded successfully", formattedData });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
