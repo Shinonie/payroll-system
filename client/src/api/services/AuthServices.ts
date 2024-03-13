@@ -38,3 +38,30 @@ export const ChangePassword = async (data: any) => {
         throw error;
     }
 };
+export const ForgotAccount = async (data: any) => {
+    const { email } = data;
+
+    try {
+        const response = await axiosInstance.post(`/auth/forgot`, {
+            email
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Login error:', error);
+        throw error;
+    }
+};
+
+export const RecoverAccount = async (data: any) => {
+    const { id, token, password } = data;
+
+    try {
+        const response = await axiosInstance.post(`/auth/recover/${id}/${token}`, {
+            password
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Login error:', error);
+        throw error;
+    }
+};

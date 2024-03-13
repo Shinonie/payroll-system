@@ -42,6 +42,9 @@ import PostViewPayroll from './components/PostViewPayroll';
 import AdminLandingPage from '@/components/LandingPage/Admin';
 import HRLandingPag from '@/components/LandingPage/HR';
 
+import ForgotPassword from '@/pages/Recover/forgot';
+import RecoverPassword from '@/pages/Recover';
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -58,6 +61,14 @@ const router = createBrowserRouter([
             {
                 path: '/register',
                 element: <Register />
+            },
+            {
+                path: '/forgot',
+                element: <ForgotPassword />
+            },
+            {
+                path: '/recover/:id/:token',
+                element: <RecoverPassword />
             }
         ]
     },

@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/form';
 import { useState, useEffect } from 'react';
 import { login } from '@/api/services/AuthServices';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useUserStore } from '@/store/useUserStore';
 import { useToast } from '@/components/ui/use-toast';
@@ -138,11 +138,18 @@ const Login = () => {
                                         id="show-password"
                                         onCheckedChange={() => setShowPassword(!showPassword)}
                                     />
-                                    <label
-                                        htmlFor="show-password"
-                                        className="text-sm font-medium leading-none  cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                        Show password
-                                    </label>
+                                    <div className="flex justify-between w-full">
+                                        <label
+                                            htmlFor="show-password"
+                                            className="text-sm font-medium leading-none  cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                            Show password
+                                        </label>
+                                        <Link
+                                            to="/forgot"
+                                            className="text-sm underline font-medium leading-none  cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                            Forgot your password
+                                        </Link>
+                                    </div>
                                 </div>
                                 <Button
                                     className="w-full text-background bg-accent hover:bg-accent-foreground hover:text-slate-400"
