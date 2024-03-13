@@ -1,6 +1,7 @@
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger
@@ -17,7 +18,7 @@ import {
     AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+import { CaretSortIcon, DotsHorizontalIcon } from '@radix-ui/react-icons';
 
 import { Button } from '@/components/ui/button';
 
@@ -28,18 +29,37 @@ import { toast } from '@/components/ui/use-toast';
 import { UpdatePayrollStatus } from '@/api/services/hr/Payroll';
 import { ExportSdkClient } from '@exportsdk/client';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export const columns = [
     {
         accessorKey: '_id',
         accessorFn: (row: any) => row?.payroll?._id,
-        header: 'ID',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    ID
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => <div className="capitalize">{row.getValue('_id')}</div>
     },
     {
         accessorKey: 'fullname',
         accessorFn: (row: any) => row?.payroll?.employeeID?.fullname,
-        header: 'Full Name',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Fullname
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => (
             <div className="flex items-center gap-2">
                 <Avatar>
@@ -77,7 +97,16 @@ export const columns = [
     {
         accessorKey: 'status',
         accessorFn: (row: any) => row?.payroll?.status,
-        header: 'Status',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Status
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => (
             <div
                 className={`capitalize rounded-xl text-center ${row.original.payroll?.status ? 'bg-green-200 text-green-700' : 'bg-orange-200 text-orange-700'}`}>
@@ -192,10 +221,6 @@ export const columns = [
                 }
             });
 
-            if (data?.payroll?.status) {
-                return null;
-            }
-
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -207,33 +232,54 @@ export const columns = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="outline">RELEASE PAYROLL</Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                    <AlertDialogDescription className="text-foreground">
-                                        This action cannot be undone. This will permanently set the
-                                        status paid from our servers.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction
-                                        className="text-white hover:bg-accent"
-                                        onClick={() =>
-                                            mutate({
-                                                employeeID: data?.payroll?.employeeID._id,
-                                                payrollID: data?.payroll?._id
-                                            })
-                                        }>
-                                        Continue
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
+                        {data?.payroll?.status ? (
+                            <DropdownMenuItem>
+                                <Link
+                                    className="w-full text-center"
+                                    to={`/human-resource/payroll/view/${data.payroll._id}`}>
+                                    View Payroll
+                                </Link>
+                            </DropdownMenuItem>
+                        ) : (
+                            <>
+                                <DropdownMenuItem>
+                                    <Link
+                                        className="w-full text-center"
+                                        to={`/human-resource/payroll/view/${data.payroll._id}`}>
+                                        View Payroll
+                                    </Link>
+                                </DropdownMenuItem>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant="outline">RELEASE PAYROLL</Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Are you absolutely sure?
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription className="text-foreground">
+                                                This action cannot be undone. This will permanently
+                                                set the status paid from our servers.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                className="text-white hover:bg-accent"
+                                                onClick={() =>
+                                                    mutate({
+                                                        employeeID: data?.payroll?.employeeID._id,
+                                                        payrollID: data?.payroll?._id
+                                                    })
+                                                }>
+                                                Continue
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </>
+                        )}
                     </DropdownMenuContent>
                 </DropdownMenu>
             );

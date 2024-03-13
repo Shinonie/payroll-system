@@ -60,12 +60,30 @@ const FormSchema = z.object({
 export const columns = [
     {
         accessorKey: '_id',
-        header: 'ID',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    ID
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => <div className="capitalize">{row.getValue('_id')}</div>
     },
     {
         accessorKey: 'employment date',
-        header: 'Employment Date',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Employement Date
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => {
             const data = row.original;
             return (
@@ -95,7 +113,16 @@ export const columns = [
     },
     {
         accessorKey: 'fullname',
-        header: 'Full Name',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Fullname
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => (
             <div className="flex items-center gap-2">
                 <Avatar>
@@ -110,7 +137,16 @@ export const columns = [
     },
     {
         accessorKey: 'birthday',
-        header: 'Birthday',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Birthday
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => (
             <div className="capitalize">
                 {new Date(row.getValue('birthday')).toLocaleDateString('en-US', {
@@ -123,7 +159,16 @@ export const columns = [
     },
     {
         accessorKey: 'gender',
-        header: 'Gender',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Gender
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => <div className="capitalize">{row.getValue('gender')}</div>
     },
     {

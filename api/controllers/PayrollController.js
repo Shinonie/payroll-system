@@ -432,6 +432,39 @@ const createPayrollPreview = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+const getPayrollByID = async (req, res) => {
+  const { payrollID } = req.params;
+
+  try {
+    const payroll = await Payroll.findById(payrollID).populate({
+      path: "employeeID",
+      select: "_id firstName middleName lastName",
+    });
+
+    if (!payroll) {
+      return res.status(404).json({ message: "Payroll not found" });
+    }
+
+    const adjustment = await Adjustment.findOne({
+      payrollID: payroll._id,
+    });
+
+    const deduction = await Deduction.findOne({
+      payrollID: payroll._id,
+    });
+
+    const payrollDetails = {
+      payroll,
+      adjustment,
+      deduction,
+    };
+
+    res.status(200).json(payrollDetails);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 const getPayrollByEmployee = async (req, res) => {
   const { employeeID } = req.params;
@@ -629,4 +662,5 @@ export {
   getAllPayrolls,
   PayrollRelease,
   CreateBulkPayroll,
+  getPayrollByID,
 };

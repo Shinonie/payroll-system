@@ -30,6 +30,15 @@ export const GetAllPayrollByEmployee = async (data: any) => {
         throw error;
     }
 };
+export const GetPayrollByID = async (data: any) => {
+    try {
+        const response = await axiosInstance.get(`/payroll/payroll/post/${data}`);
+        return response.data;
+    } catch (error) {
+        console.error('Request error:', error);
+        throw error;
+    }
+};
 
 export const CreatePayroll = async (data: any) => {
     try {

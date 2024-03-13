@@ -21,13 +21,31 @@ import { RejectLeave, ApproveLeave } from '@/api/services/hr/Leaves';
 export const columns = [
     {
         accessorKey: '_id',
-        header: 'ID',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    ID
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => <div className="capitalize">{row.getValue('_id')}</div>
     },
     {
         accessorKey: 'fullname',
         accessorFn: (row: any) => row.employeeID.fullname,
-        header: 'Full Name',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    FULLNAME
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => (
             <div className="flex items-center gap-2">
                 <Avatar>
@@ -42,7 +60,16 @@ export const columns = [
     },
     {
         accessorKey: 'Leave Type',
-        header: 'Leave Type',
+        header: ({ column }: any) => {
+            return (
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+                    Leave Type
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            );
+        },
         cell: ({ row }: any) => <div className="capitalize">{row.original?.leaveType}</div>
     },
     {
