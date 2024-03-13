@@ -19,6 +19,7 @@ import {
     AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
 import Preloader from '@/components/Preloader';
+import AttendanceReport from '@/components/Report/AttendanceReport';
 
 const EmployeeAdmin = () => {
     const { isLoading, data } = useQuery({
@@ -55,6 +56,7 @@ const EmployeeAdmin = () => {
                 </div>
                 <div className="flex flex-col w-1/4 gap-2">
                     <UploadAttendance />
+                    <AttendanceReport />
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button className="w-full text-white hover:bg-primary-foreground">
