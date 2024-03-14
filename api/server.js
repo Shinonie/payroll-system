@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/database.js";
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
+import cors from "cors";
 
 // ROUTES
 import AuthRoutes from "./routes/AuthRoutes.js";
@@ -25,6 +26,12 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: "https://alphasteelmetal.vercel.com",
+  })
+);
 
 // ROOT ROUTES
 app.use("/api/auth", AuthRoutes);
