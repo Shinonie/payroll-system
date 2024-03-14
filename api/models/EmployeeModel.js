@@ -1,21 +1,40 @@
 import mongoose from "mongoose";
-import { userTypeEnum } from "../constant/enums";
+import { userTypeEnum } from "../constant/enums.js";
 
 const EmployeeSchema = new mongoose.Schema(
   {
-    fullname: { type: String, required: true },
-    userName: { type: String, required: true, unique: true },
+    _id: { type: String, required: true },
+    controlNumber: { type: String, required: true, unique: true },
+    biometricNumber: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    middleName: { type: String },
+    SSSLoan: { type: Number },
+    PagibigLoan: { type: Number },
+    hourlyRate: { type: Number, required: true },
+    allowance: { type: Number },
+    incentives: { type: Number },
+    decemberMonthPay: { type: Number, default: 0 },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    birthday: { type: Date },
-    gender: { type: String },
-    civilStatus: { type: String },
-    address: { type: String },
+    birthday: { type: String, required: true },
+    gender: { type: String, required: true },
+    civilStatus: { type: String, required: true },
+    address: { type: String, required: true },
     userType: { type: String, required: true, enum: userTypeEnum },
+    archive: { type: Boolean, default: false },
+    adjustment: { type: Boolean, default: false },
   },
   {
     timestamps: true,
   }
 );
+
+EmployeeSchema.virtual("fullname").get(function () {
+  return `${this.firstName} ${this.middleName} ${this.lastName}`;
+});
+
+EmployeeSchema.set("toJSON", { virtuals: true });
 
 const Employee = mongoose.model("Employee", EmployeeSchema);
 

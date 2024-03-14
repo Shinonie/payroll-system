@@ -1,1 +1,28 @@
 export const userTypeEnum = ["HR", "ADMIN", "EMPLOYEE"];
+export const attendanceStatusEnum = [
+  "LATE",
+  "ONTIME",
+  "UNDERTIME",
+  "OVERTIME",
+  "ERROR",
+];
+export const breakStatusEnum = ["OVERBREAK", "ONTIME", "ERROR"];
+export const remarksEnum = ["WHOLEDAY", "HALFDAY"];
+
+export const leaveTypeEnum = [
+  "SICK_LEAVE",
+  "VACATION_LEAVE",
+  "MATERNAL_LEAVE",
+  "PATERNAL_LEAVE",
+  "FORCED_MANDATORY_LEAVE",
+  "SPECIAL_PRIVILEGE_LEAVE_PARENTAL_SOLO_PARENT_LEAVE",
+  "REHABILITATION_LEAVE",
+  "STUDY_LEAVE",
+  "TERMINAL_LEAVE",
+  "SPECIAL_EMERGENCY_LEAVE",
+  "VIOLENCE_AGAINST_WOMEN_AND_CHILDREN_ACT_LEAVE",
+  "SPECIAL_LEAVE_FOR_WOMEN_GYNAECOLOGICAL_DISORDER",
+  "LEAVE_FOR_GOOD",
+];
+
+export const statusEnum = ["APPROVE", "PENDING", "REJECTED"];
